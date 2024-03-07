@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\LevelGenerator.cs" />
+    <Compile Include="Assets\Scripts\CubeCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
