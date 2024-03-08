@@ -153,6 +153,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridElement: {fileID: 6248755850005424336, guid: 1a4192de72ba3254ca62588926f470a1, type: 3}
+  iterations: 4
+  numGrass: 5
+  numGround: 2
+  numWater: 8
 --- !u!4 &453837369
 Transform:
   m_ObjectHideFlags: 0

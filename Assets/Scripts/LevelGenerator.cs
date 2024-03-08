@@ -9,19 +9,18 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     GameObject gridElement;
 
-    int gridWidth = 0;
-    int gridDepth = 0;
-    int iterations = 1;
+    int gridWidth = 50;
+    int gridDepth = 50;
+    public int iterations = 1;
 
-    int numGrass = 3;
-    int numGround = 5;
-    int numWater = 8;
+    public int numGrass = 3;
+    public int numGround = 4;
+    public int numWater = 8;
 
     float prefabWidth;
     float prefabDepth;
 
     bool canGenerateCell;
-    Vector3 topLeftCorner;
 
     bool m_isStepped = true;
 
@@ -30,9 +29,9 @@ public class LevelGenerator : MonoBehaviour
     //GameObject[,] cellsArrayOne = new GameObject[0, 0];
     CellType[,] cellsArrayMap = new CellType[0, 0];
 
-    private void Awake() {
-        UpdatePosition();
-    }
+    //private void Awake() {
+    //    UpdatePosition();
+    //}
 
     private void Start() {
         // Check if cell has been defined and check and assign it's dimension
@@ -45,12 +44,12 @@ public class LevelGenerator : MonoBehaviour
         Debug.Log("Missing cell prefab");
     }
 
-    void Update() {
-        // Check if the screen size has changed and update the position
-        if (Screen.width != transform.position.x || Screen.height != transform.position.y) {
-            UpdatePosition();
-        }
-    }
+    //void Update() {
+    //    // Check if the screen size has changed and update the position
+    //    if (Screen.width != transform.position.x || Screen.height != transform.position.y) {
+    //        UpdatePosition();
+    //    }
+    //}
 
     public void generateGrid() {
         
@@ -105,9 +104,9 @@ public class LevelGenerator : MonoBehaviour
     }
 
     // Set the position to the top-left corner of the screen
-    void UpdatePosition() {
-        topLeftCorner = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height*0.25f, 0));
-    }
+    //void UpdatePosition() {
+    //    //topLeftCorner = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height*0.25f, 0));
+    //}
 
     IEnumerator createGrid() {
         
@@ -137,7 +136,7 @@ public class LevelGenerator : MonoBehaviour
 
                         switch (cellsArrayMap[i, j]) {
                             case CellType.Grass:
-                                if(numOfNeighbors == numWater) {
+                                if(numOfNeighbors >= numWater) {
                                     cellsArray[i, j].GetComponent<CubeCell>().setCube(CellType.Water); break;
                                 }
                                 cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Ground);
