@@ -13,12 +13,9 @@ public class LevelGenerator : MonoBehaviour
     int gridDepth = 0;
     int iterations = 1;
 
-    int numAlive = 3;
-    int numDead = 5;
-
     int numGrass = 3;
     int numGround = 5;
-    int numWater = 9;
+    int numWater = 8;
 
     float prefabWidth;
     float prefabDepth;
@@ -40,8 +37,8 @@ public class LevelGenerator : MonoBehaviour
     private void Start() {
         // Check if cell has been defined and check and assign it's dimension
         if (gridElement != null) {
-            prefabWidth = gridElement.GetComponent<MeshRenderer>().bounds.size.x;
-            prefabDepth = gridElement.GetComponent<MeshRenderer>().bounds.size.z;
+            //prefabWidth = gridElement.GetComponent<MeshRenderer>().bounds.size.x;
+            //prefabDepth = gridElement.GetComponent<MeshRenderer>().bounds.size.z;
             generateGrid();
             return;
         }
@@ -71,16 +68,6 @@ public class LevelGenerator : MonoBehaviour
             cellsArray = new GameObject[gridDepth, gridWidth];
         }
 
-        //// Resize array if it is not empty.
-        //if (cellsArray.Length != 0) {
-        //    foreach (GameObject cell in cellsArray) {
-        //        Destroy(cell);
-        //    }
-        //    Array.Clear(cellsArray, 0, cellsArray.Length);
-        //    // somthing deleted
-        //    ResizeMatrix(gridDepth, gridWidth);
-        //}
-
         if (gridWidth == 0) {
             gridWidth = 50;
         }
@@ -92,12 +79,6 @@ public class LevelGenerator : MonoBehaviour
         StartCoroutine(createGrid());
     }
 
-    //// Create a new matrix with the desired size
-    //void ResizeMatrix(int newRows, int newColumns) {
-    //    GameObject[,] newMatrix = new GameObject[newRows, newColumns];
-    //    cellsArray = newMatrix;
-    //}
-
     // Assign grid width
     public void getWidthInput(string input) {
         gridWidth = Convert.ToInt32(input);
@@ -106,14 +87,14 @@ public class LevelGenerator : MonoBehaviour
     public void getHeightInput(string input) {
         gridDepth = Convert.ToInt32(input);
     }
-    // Assign number of similar cells for alive ones to continue living
-    public void getAliveNum(string input) {
-        numAlive = Convert.ToInt32(input);
-    }
-    // Assign number of similar cells for dead ones to continue dead
-    public void getDeadNum(string input) {
-        numDead = Convert.ToInt32(input);
-    }
+    //// Assign number of similar cells for alive ones to continue living
+    //public void getAliveNum(string input) {
+    //    numAlive = Convert.ToInt32(input);
+    //}
+    //// Assign number of similar cells for dead ones to continue dead
+    //public void getDeadNum(string input) {
+    //    numDead = Convert.ToInt32(input);
+    //}
 
     public void getIterations(string input) {
         iterations = Convert.ToInt32(input);
@@ -135,9 +116,9 @@ public class LevelGenerator : MonoBehaviour
                 if (canGenerateCell) {
                     setRandomCubes(i, j);
                     // Create a little pause before drawing each individual cell on the matrix
-                    if (m_isStepped) {
-                        yield return new WaitForSeconds(0.02f);
-                    }
+                    //if (m_isStepped) {
+                    //    yield return new WaitForSeconds(0.02f);
+                    //}
                 }
             }
         }
@@ -145,7 +126,7 @@ public class LevelGenerator : MonoBehaviour
         copyArray();
 
         for(int it=0; it<iterations; it++) {
-            yield return new WaitForSeconds(0.5f);
+           // yield return new WaitForSeconds(0.5f);
             for (int i = 0; i < gridWidth; i++) {
                 for (int j = 0; j < gridDepth; j++) {
                     // Check if the cell matrix is empty before creating a new one
@@ -156,6 +137,9 @@ public class LevelGenerator : MonoBehaviour
 
                         switch (cellsArrayMap[i, j]) {
                             case CellType.Grass:
+                                if(numOfNeighbors == numWater) {
+                                    cellsArray[i, j].GetComponent<CubeCell>().setCube(CellType.Water); break;
+                                }
                                 cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Ground);
                                 break;
                             case CellType.Ground:
@@ -163,19 +147,20 @@ public class LevelGenerator : MonoBehaviour
                                 break;
                             default: Debug.Log("Error with cell type"); break;
                         }
-                        if (m_isStepped) {
-                            yield return new WaitForSeconds(0.02f);
-                        }
+                        //if (m_isStepped) {
+                        //    yield return new WaitForSeconds(0.02f);
+                        //}
                     }
 
                 }
             }   
         }
+        yield break ;
     }
 
     void setRandomCubes(int i, int j) {
        // Debug.Log("This");
-        bool randomValue = UnityEngine.Random.Range(0, 100) < 50;
+        bool randomValue = UnityEngine.Random.Range(0, 100) < 30;
         Vector3 cubePos = new Vector3(i - gridWidth * 0.5f, 0, j - gridDepth * 0.5f);
         // Instantiate cube
         GameObject temp = Instantiate(gridElement, cubePos, Quaternion.identity);
