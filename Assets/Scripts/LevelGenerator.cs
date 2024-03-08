@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -25,11 +26,11 @@ public class LevelGenerator : MonoBehaviour
     bool canGenerateCell;
     Vector3 topLeftCorner;
 
-    bool m_isStepped;
+    bool m_isStepped = true;
 
     GameObject[,] cellsArray = new GameObject[0, 0];
 
-    GameObject[,] cellsArrayOne = new GameObject[0, 0];
+    //GameObject[,] cellsArrayOne = new GameObject[0, 0];
     CellType[,] cellsArrayMap = new CellType[0, 0];
 
     private void Awake() {
@@ -41,6 +42,7 @@ public class LevelGenerator : MonoBehaviour
         if (gridElement != null) {
             prefabWidth = gridElement.GetComponent<MeshRenderer>().bounds.size.x;
             prefabDepth = gridElement.GetComponent<MeshRenderer>().bounds.size.z;
+            generateGrid();
             return;
         }
         Debug.Log("Missing cell prefab");
@@ -54,6 +56,7 @@ public class LevelGenerator : MonoBehaviour
     }
 
     public void generateGrid() {
+        
         if (canGenerateCell) {
             canGenerateCell = false;
             StopAllCoroutines();
@@ -62,37 +65,38 @@ public class LevelGenerator : MonoBehaviour
         // Check if matrix array size has not been defined and set a default size if it hasn´t.
         if (cellsArray.Length == 0) {
             if (gridWidth == 0 || gridDepth == 0) {
-                gridWidth = 50;
-                gridDepth = 50;
+                gridWidth = 30;
+                gridDepth = 30;
             }
             cellsArray = new GameObject[gridDepth, gridWidth];
         }
 
-        // Resize array if it is not empty.
-        if (cellsArray.Length != 0) {
-            foreach (GameObject cell in cellsArray) {
-                Destroy(cell);
-            }
-            Array.Clear(cellsArray, 0, cellsArray.Length);
-            // somthing deleted
-            ResizeMatrix(gridDepth, gridWidth);
-        }
+        //// Resize array if it is not empty.
+        //if (cellsArray.Length != 0) {
+        //    foreach (GameObject cell in cellsArray) {
+        //        Destroy(cell);
+        //    }
+        //    Array.Clear(cellsArray, 0, cellsArray.Length);
+        //    // somthing deleted
+        //    ResizeMatrix(gridDepth, gridWidth);
+        //}
 
         if (gridWidth == 0) {
-            gridWidth = 20;
+            gridWidth = 50;
         }
         if (gridDepth == 0) {
-            gridDepth = 20;
+            gridDepth = 50;
         }
         canGenerateCell = true;
+      
         StartCoroutine(createGrid());
     }
 
-    // Create a new matrix with the desired size
-    void ResizeMatrix(int newRows, int newColumns) {
-        GameObject[,] newMatrix = new GameObject[newRows, newColumns];
-        cellsArray = newMatrix;
-    }
+    //// Create a new matrix with the desired size
+    //void ResizeMatrix(int newRows, int newColumns) {
+    //    GameObject[,] newMatrix = new GameObject[newRows, newColumns];
+    //    cellsArray = newMatrix;
+    //}
 
     // Assign grid width
     public void getWidthInput(string input) {
@@ -125,64 +129,63 @@ public class LevelGenerator : MonoBehaviour
     }
 
     IEnumerator createGrid() {
-        for (int it = 0; it <= iterations; it++) {
-            // Destroy and clear cells array for the next iteration
-            yield return new WaitForSeconds(0.2f);
-            if (it > 0) {
-                copyArray();
-                if (cellsArray.Length != 0) {
-                    foreach (GameObject cell in cellsArray) {
-                        Destroy(cell);
+        
+        for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridDepth; j++) {
+                if (canGenerateCell) {
+                    setRandomCubes(i, j);
+                    // Create a little pause before drawing each individual cell on the matrix
+                    if (m_isStepped) {
+                        yield return new WaitForSeconds(0.02f);
                     }
-                    Array.Clear(cellsArray, 0, cellsArray.Length);
                 }
             }
-            for (int i = 0; i < gridDepth; i++) {
-                for (int j = 0; j < gridWidth; j++) {
+        }
+        // Copy the array values of the random initial cubes to a bool array to know if they are alive or dead
+        copyArray();
+
+        for(int it=0; it<iterations; it++) {
+            yield return new WaitForSeconds(0.5f);
+            for (int i = 0; i < gridWidth; i++) {
+                for (int j = 0; j < gridDepth; j++) {
                     // Check if the cell matrix is empty before creating a new one
                     if (canGenerateCell) {
-                        if (it == 0) {
-                            bool randomValue = UnityEngine.Random.Range(0, 100) < 50;
-                            // Create cell instance with random color value.
-                            GameObject temp = Instantiate(gridElement, new Vector3((j * prefabWidth) + (topLeftCorner.x + prefabWidth), (topLeftCorner.y - prefabDepth) - (i * prefabDepth), 0), Quaternion.identity);
-                            temp.GetComponent<CubeCell>().setCellColor(randomValue);
+                        //check neighbors
 
-                            // Asign cell to a position in the matrix
-                            cellsArray[i, j] = temp;
-                        } else {
-                            // Check neigbors
-                            GameObject temp = Instantiate(gridElement, new Vector3((j * prefabWidth) + (topLeftCorner.x + prefabWidth), (topLeftCorner.y - prefabDepth) - (i * prefabDepth), 0), Quaternion.identity);
-                            int numberOfNeighbors = checkNeighbors(i, j);
-                            // If the cell is alive the color returns true
-                            if (cellsArrayOne[i, j].GetComponent<CubeCell>().getColor()) {
-                                // Check if rule is met for alive cells and asign color
-                                temp.GetComponent<CubeCell>().setCellColor((numberOfNeighbors >= numAlive) ? true : false);
-                            } else {
-                                // Check if rule is met for dead cells and asign color
-                                temp.GetComponent<CubeCell>().setCellColor((numberOfNeighbors >= numDead) ? false : true);
-                            }
-                            // To keep cells in a closed grid
-                            if (i == 0 || j == 0 || i == gridDepth - 1 || j == gridWidth - 1) {
-                                temp.GetComponent<CubeCell>().setCellColor(false);
-                            }
-                            // Add temp cell to the original cells array
-                            cellsArray[i, j] = temp;
+                        int numOfNeighbors = checkNeighbors(i, j);
+
+                        switch (cellsArrayMap[i, j]) {
+                            case CellType.Grass:
+                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Ground);
+                                break;
+                            case CellType.Ground:
+                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGround) ? CellType.Ground : CellType.Grass);
+                                break;
+                            default: Debug.Log("Error with cell type"); break;
                         }
-                        // Create a little pause before drawing each individual cell on the matrix
                         if (m_isStepped) {
                             yield return new WaitForSeconds(0.02f);
                         }
                     }
+
                 }
-            }
-            // Clear the cells from the secondary matrix array
-            if (cellsArrayOne.Length != 0) {
-                foreach (GameObject cell in cellsArrayOne) {
-                    Destroy(cell);
-                }
-                Array.Clear(cellsArrayOne, 0, cellsArrayOne.Length);
-            }
+            }   
         }
+    }
+
+    void setRandomCubes(int i, int j) {
+       // Debug.Log("This");
+        bool randomValue = UnityEngine.Random.Range(0, 100) < 50;
+        Vector3 cubePos = new Vector3(i - gridWidth * 0.5f, 0, j - gridDepth * 0.5f);
+        // Instantiate cube
+        GameObject temp = Instantiate(gridElement, cubePos, Quaternion.identity);
+    
+        // set cube render to active true or false depending on random value
+        temp.GetComponent<CubeCell>().setCube((randomValue) ? CellType.Ground : CellType.Grass);
+       
+        temp.transform.SetParent(transform);
+        // Asign cell to a position in the matrix
+        cellsArray[i, j] = temp;
     }
 
     int checkNeighbors(int x, int y) {
@@ -194,7 +197,7 @@ public class LevelGenerator : MonoBehaviour
         // Go through the neighbors of the cell and check if they are the same color as the center cell
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                if (cellsArrayOne[x + i, y + j].GetComponent<CubeCell>().getCellColor() == cellsArrayOne[x, y].GetComponent<CubeCell>().getCellColor()) {
+                if (cellsArrayMap[x + i, y + j] == cellsArrayMap[x, y]) {
                     num++;
                 }
             }
@@ -205,18 +208,10 @@ public class LevelGenerator : MonoBehaviour
 
     // Copy matrix array to check the condition of the next generation of cells without affecting the original matrix of cells
     void copyArray() {
-        cellsArrayOne = new GameObject[cellsArray.GetLength(0), cellsArray.GetLength(1)];
-
         cellsArrayMap = new CellType[cellsArray.GetLength(0), cellsArray.GetLength(1)];
-
         for (int i = 0; i < cellsArray.GetLength(0); i++) {
             for (int j = 0; j < cellsArray.GetLength(1); j++) {
-                cellsArrayOne[i, j] = Instantiate(gridElement);
-                // Set active to false to hide the temp gameObject from the game scene
-                cellsArrayOne[i, j].SetActive(false);
-                cellsArrayOne[i, j].GetComponent<CubeCell>().setCellColor(cellsArray[i, j].GetComponent<CubeCell>().getColor());
-
-                cellsArrayMap[i,j] = cellsArray[i, j].GetComponent<CubeCell>().getCellType();
+                cellsArrayMap[i, j] = cellsArray[i, j].GetComponent<CubeCell>().getCellType();
             }
         }
     }
