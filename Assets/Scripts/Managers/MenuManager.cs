@@ -5,10 +5,39 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+    [SerializeField]
+    GameObject menuBackground, inputBackground, creditsBackground;
+
     int lionCount;
     int dogCount;
     int catCount;
     int chickenCount;
+
+    private void Start() {
+        openMainMenu();
+    }
+
+    public void openMainMenu() {
+        menuBackground.SetActive(true);
+        inputBackground.SetActive(false);
+        creditsBackground.SetActive(false);
+    }
+
+    public void setUpGame() {
+        inputBackground.SetActive(true);
+        menuBackground.SetActive(false);
+        creditsBackground.SetActive(false);
+    }
+
+    public void openCredits() {
+        creditsBackground.SetActive(true);
+        inputBackground.SetActive(false);
+        menuBackground.SetActive(false);
+    }
+
+    public void exitGame() {
+        Application.Quit();
+    }
 
     public void setLionCount(string input) {
         lionCount = clampInputValue(input);

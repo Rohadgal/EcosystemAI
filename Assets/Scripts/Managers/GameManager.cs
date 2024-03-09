@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum GameState {
     None,
-    LoadMenu,
+    MainMenu,
     ChangeLevel,
     Playing,
     GameFinished
@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        m_gameState = GameState.MainMenu;
     }
 
     // Update is called once per frame
