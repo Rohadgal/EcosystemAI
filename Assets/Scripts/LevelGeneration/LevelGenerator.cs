@@ -136,12 +136,13 @@ public class LevelGenerator : MonoBehaviour
 
                         switch (cellsArrayMap[i, j]) {
                             case CellType.Grass:
-                                if(numOfNeighbors >= numWater) {
-                                    cellsArray[i, j].GetComponent<CubeCell>().setCube(CellType.Water); break;
-                                }
+                                
                                 cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Ground);
                                 break;
                             case CellType.Ground:
+                                if (numOfNeighbors >= numWater) {
+                                    cellsArray[i, j].GetComponent<CubeCell>().setCube(CellType.Water); break;
+                                }
                                 cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGround) ? CellType.Ground : CellType.Grass);
                                 break;
                             default: Debug.Log("Error with cell type"); break;

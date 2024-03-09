@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 359787136091731617}
   - component: {fileID: 8098532482508684982}
   - component: {fileID: 8659466315844886182}
+  - component: {fileID: 884553027725580956}
   m_Layer: 0
   m_Name: CubeCell
   m_TagString: Untagged
@@ -106,8 +107,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2.0785284, z: 1}
+  m_Center: {x: 0, y: 0.5392642, z: 0}
 --- !u!114 &8659466315844886182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +124,26 @@ MonoBehaviour:
   _cellType: 0
   tree: {fileID: 7953409378191248158}
   grass: {fileID: 6571893038662065952}
+--- !u!154 &884553027725580956
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6248755850005424336}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_TerrainData: {fileID: 0}
+  m_EnableTreeColliders: 1
 --- !u!1 &6571893038662065952
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,9 +155,10 @@ GameObject:
   - component: {fileID: 313088118080339736}
   - component: {fileID: 7025456140560149185}
   - component: {fileID: 8719416884550319605}
+  - component: {fileID: 6978194857380309930}
   m_Layer: 0
   m_Name: Grass_01_LOD1
-  m_TagString: Untagged
+  m_TagString: grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -206,6 +228,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &6978194857380309930
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6571893038662065952}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.31
+  m_Direction: 1
+  m_Center: {x: 0.009223938, y: 0.0077216625, z: 0}
 --- !u!1 &7953409378191248158
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,6 +262,8 @@ GameObject:
   - component: {fileID: 6691451522981410563}
   - component: {fileID: 9046198161679225316}
   - component: {fileID: 7409405355514626665}
+  - component: {fileID: 8220509045968456800}
+  - component: {fileID: 5951498948986314119}
   m_Layer: 0
   m_Name: Tree_03_LOD1
   m_TagString: Untagged
@@ -289,3 +336,48 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &8220509045968456800
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7953409378191248158}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.23
+  m_Height: 4.9843674
+  m_Direction: 1
+  m_Center: {x: 0, y: 2.55, z: -0.07}
+--- !u!64 &5951498948986314119
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7953409378191248158}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -944959908092971740, guid: 69f0af3a0a6c73b4ab4b89eb82cdc488, type: 3}

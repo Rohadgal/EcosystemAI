@@ -355,8 +355,14 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.10f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.10f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
-"Assets/Scripts/CubeCell.cs"
-"Assets/Scripts/LevelGenerator.cs"
+"Assets/Scripts/Characters/Animal.cs"
+"Assets/Scripts/Characters/Chicken.cs"
+"Assets/Scripts/LevelGeneration/CubeCell.cs"
+"Assets/Scripts/LevelGeneration/LevelGenerator.cs"
+"Assets/Scripts/Managers/GameManager.cs"
+"Assets/Scripts/Managers/LevelManager.cs"
+"Assets/Scripts/SteeringBehaviours/SteeringBehaviours.cs"
+"Assets/VoxelAnimals/Assets/Scripts/PlayerController.cs"
 -langversion:9.0
 
 /deterministic
