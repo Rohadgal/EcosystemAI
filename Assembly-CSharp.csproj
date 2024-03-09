@@ -61,6 +61,7 @@
     <Compile Include="Assets\Scripts\LevelGeneration\CubeCell.cs" />
     <Compile Include="Assets\Scripts\Characters\Animal.cs" />
     <Compile Include="Assets\VoxelAnimals\Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Managers\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Characters\Chicken.cs" />
     <Compile Include="Assets\Scripts\LevelGeneration\LevelGenerator.cs" />

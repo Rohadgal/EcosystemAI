@@ -14,7 +14,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager s_instance;
 
-    public int numberOfAnimals { get; private set; }
+    public int numberOfLions { get; private set; }
+    public int numberOfDogs { get; private set; }
+    public int numberOfCats { get; private set; }
+    public int numberOfChickens { get; private set; }
 
     private GameState m_gameState;
     int levelIndex;
@@ -43,8 +46,17 @@ public class GameManager : MonoBehaviour
     }
 
     #region Setters
-    public void SetNumberOfAnimals(int number) {
-        numberOfAnimals = number;
+    public void SetNumberOfLions(int number) {
+        numberOfLions = number;
+    }
+    public void SetNumberOfDogs(int number) {
+        numberOfDogs = number;
+    }
+    public void SetNumberOfCats(int number) {
+        numberOfCats = number;
+    }
+    public void SetNumberOfChickens(int number) {
+        numberOfChickens = number;
     }
     #endregion
 }

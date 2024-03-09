@@ -361,6 +361,7 @@
 "Assets/Scripts/LevelGeneration/LevelGenerator.cs"
 "Assets/Scripts/Managers/GameManager.cs"
 "Assets/Scripts/Managers/LevelManager.cs"
+"Assets/Scripts/Managers/MenuManager.cs"
 "Assets/Scripts/SteeringBehaviours/SteeringBehaviours.cs"
 "Assets/VoxelAnimals/Assets/Scripts/PlayerController.cs"
 -langversion:9.0
