@@ -2,8 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState {
+    None,
+    LoadMenu,
+    ChangeLevel,
+    Playing,
+    GameFinished
+}
+
 public class GameManager : MonoBehaviour
 {
+    public static GameManager s_instance;
+
+    public int numberOfAnimals { get; private set; }
+
+    private GameState m_gameState;
+    int levelIndex;
+
+    // Awake is called when the script instance is being loaded
+    private void Awake() {
+        // Singleton pattern to ensure there's only one instance of GameManager
+        if (s_instance != null && s_instance != this) {
+            Destroy(this);
+        } else {
+            s_instance = this;
+        }
+
+        m_gameState = GameState.None;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -15,4 +41,10 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    #region Setters
+    public void SetNumberOfAnimals(int number) {
+        numberOfAnimals = number;
+    }
+    #endregion
 }
