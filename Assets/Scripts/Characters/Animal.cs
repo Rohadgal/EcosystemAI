@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
@@ -91,7 +92,7 @@ public class Animal : MonoBehaviour
     /// Steering behavior for the "Wandering" state.
     /// </summary>
     void wander() {
-        SteeringBehaviours.wander(this, 550, 15, 90);
+        SteeringBehaviours.wander(this, 550, 15, 180);
     }
 
     /// <summary>
@@ -184,7 +185,8 @@ public class Animal : MonoBehaviour
                 m_animator.SetBool("isEvading", true);
                 break;
             case AnimalState.Eat:
-                m_animator.SetBool("isEating", true);
+                m_animator.SetBool("isIdle", true);
+                rb.velocity = Vector3.zero;
                 break;
             case AnimalState.Wander:
                 m_animator.SetBool("isWandering", true);
@@ -257,4 +259,23 @@ public class Animal : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(this.transform.position, m_perceptionRadius);
     }
+
+    //private void OnCollisionEnter(Collision collision) {
+    //    if (collision.gameObject.GetComponent<CubeCell>() != null) {
+    //        if (collision.gameObject.GetComponent<CubeCell>().getCellType() == CellType.Water) {
+    //            SteeringBehaviours.addSteringForce(this, new Vector3(rb.velocity.z, this.transform.position.y, rb.velocity.x));
+    //            rb.AddTorque(new Vector3(0f, 90f, 0f), ForceMode.Impulse);
+    //            Debug.LogWarning("collided");
+    //        }
+    //    }
+    //}
+
+    //private void OnCollisionStay(Collision collision) {
+    //    if (collision.gameObject.GetComponent<CubeCell>() != null) {
+    //        if (collision.gameObject.GetComponent<CubeCell>().getCellType() == CellType.Water) {
+    //            rb.AddTorque(new Vector3(0f, 90f, 0f), ForceMode.Impulse);
+    //            Debug.LogWarning("collided stay");
+    //        }
+    //    }
+    //}
 }

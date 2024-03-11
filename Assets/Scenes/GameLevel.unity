@@ -262,7 +262,7 @@ MonoBehaviour:
   iterations: 4
   numGrass: 1
   numGround: 2
-  numWater: 7
+  numWater: 8
 --- !u!4 &453837369
 Transform:
   m_ObjectHideFlags: 0

@@ -60,7 +60,7 @@ public class CubeCell : MonoBehaviour
                     this.GetComponent<BoxCollider>().enabled = false;
                     Color greenColor = new Vector4(.5f, .9f, 0f, 1f);
                     _meshRenderer.material.color = greenColor;
-                    bool hasVegetation = UnityEngine.Random.Range(0f, 1f) < .2f;
+                    bool hasVegetation = UnityEngine.Random.Range(0f, 1f) < .04f;
                     if (hasVegetation) {
                         bool isTree = UnityEngine.Random.Range(0f, 1f) < .02f;
                         (isTree ? tree : grass).GetComponent<MeshRenderer>().enabled = true;
@@ -72,9 +72,6 @@ public class CubeCell : MonoBehaviour
                     Color blueColor = new Vector4(.4f, .6f, .9f, 1f);
                     _meshRenderer.material.color = blueColor;
                     (tree.GetComponent<MeshRenderer>().enabled ? tree : grass).GetComponent<MeshRenderer>().enabled = false;
-                    //if (tree.GetComponent<CapsuleCollider>().enabled) {
-                    //    tree.GetComponent<CapsuleCollider>().enabled = false;
-                    //}
                     this.GetComponent<BoxCollider>().enabled = true;
                     (tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
                     break;

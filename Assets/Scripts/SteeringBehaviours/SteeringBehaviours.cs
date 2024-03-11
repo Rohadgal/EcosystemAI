@@ -32,7 +32,7 @@ public class SteeringBehaviours : MonoBehaviour
     /// </summary>
     /// <param name="t_animal">The agent to apply the steering force.</param>
     /// <param name="desiredVel">The desired velocity.</param>
-    private static void addSteringForce(Animal t_animal, Vector3 desiredVel) {
+    public static void addSteringForce(Animal t_animal, Vector3 desiredVel) {
         Vector3 steeringForce = desiredVel - t_animal.rb.velocity;
         steeringForce = Vector3.ClampMagnitude(steeringForce, t_animal.getMaxForce());
         steeringForce /= t_animal.rb.mass;

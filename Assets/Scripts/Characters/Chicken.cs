@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum chickenStates { None, Wandering, Seeking, Eating, Evading, Dead}
@@ -11,7 +12,7 @@ public class Chicken : MonoBehaviour
     Animal _animal;
     chickenStates _chickenStates;
     public List<GameObject> _perceivedObjects;
-    bool isHungry = false;
+    bool isHungry = false, isSatisfied = true;
     GameObject target;
 
     // Start is called before the first frame update
@@ -65,10 +66,16 @@ public class Chicken : MonoBehaviour
             _animal.setTarget(target);
             _chickenStates = chickenStates.Seeking;
 
-            if(Vector3.Distance(transform.position, target.transform.position) <= 1.2f) {
+            if(Vector3.Distance(transform.position, target.transform.position) <= 2f) {
+                _chickenStates = chickenStates.Eating;
                 isHungry = false;
-                _chickenStates = chickenStates.None;
+                actionManager();
+                return;
             }
+        }
+
+        if(isSatisfied) {
+            _chickenStates = chickenStates.Wandering;
         }
 
         //foreach(GameObject grass in t_perceivedObjects) {
@@ -102,6 +109,17 @@ public class Chicken : MonoBehaviour
         }
     }
 
+    void actionManager() {
+        switch(_chickenStates) {
+            case chickenStates.Eating:
+                _animal.ChangeAnimalState(AnimalState.Eat);
+                _perceivedObjects.Clear();
+                eat(target);
+                break;
+             default : break;
+        }
+    }
+
     void hungerSystem() {
         float hungerIncrement = 0.1f;
         float currentHungerLevel = _animal.getHunger() + hungerIncrement;
@@ -114,6 +132,14 @@ public class Chicken : MonoBehaviour
         if(_animal.getHunger() > feelHungry) {
             Debug.LogWarning("hungry: " + isHungry);
             isHungry = true;
+            isSatisfied = false;
         }
+    }
+
+    void eat(GameObject _food) {
+        _food.GetComponent<CapsuleCollider>().enabled = false;
+        _food.GetComponent<MeshRenderer>().enabled = false;
+        _animal.setHunger(0f);
+        isSatisfied = true;
     }
 }
