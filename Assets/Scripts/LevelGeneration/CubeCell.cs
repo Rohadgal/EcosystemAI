@@ -11,6 +11,7 @@ public class CubeCell : MonoBehaviour
     public CellType _cellType;
     [SerializeField]
     GameObject tree, grass;
+    public string waterTag = "water";
 
 
     private void Awake() {
@@ -47,6 +48,7 @@ public class CubeCell : MonoBehaviour
         if (_meshRenderer != null) {
             switch (_cellType) {
                 case CellType.Ground:
+                    this.tag = "Untagged";
                     this.GetComponent<BoxCollider>().enabled = false;
                     Color brownColor = new Vector4(1f, .5f, .5f, 1f);
                     _meshRenderer.material.color = brownColor;
@@ -57,6 +59,7 @@ public class CubeCell : MonoBehaviour
                     (tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
                     break;
                 case CellType.Grass:
+                    this.tag = "Untagged";
                     this.GetComponent<BoxCollider>().enabled = false;
                     Color greenColor = new Vector4(.5f, .9f, 0f, 1f);
                     _meshRenderer.material.color = greenColor;
@@ -74,6 +77,7 @@ public class CubeCell : MonoBehaviour
                     (tree.GetComponent<MeshRenderer>().enabled ? tree : grass).GetComponent<MeshRenderer>().enabled = false;
                     this.GetComponent<BoxCollider>().enabled = true;
                     (tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
+                    this.tag = waterTag;
                     break;
                 default: Debug.Log("Incorrect cellType"); break;
             }
