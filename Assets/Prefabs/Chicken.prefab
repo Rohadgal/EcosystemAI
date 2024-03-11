@@ -177,7 +177,7 @@ MonoBehaviour:
   m_animator: {fileID: 6115597389610542776}
   m_reproductiveUrgeBarSprite: {fileID: 0}
   m_hungerBarSprite: {fileID: 5196972058000242596}
-  m_thirstBarSprite: {fileID: 0}
+  m_thirstBarSprite: {fileID: 7666997249716580856}
   m_needsCanvasGameObject: {fileID: 7976681489959559975}
   rb: {fileID: 5438475394097319171}
 --- !u!54 &5438475394097319171
@@ -581,6 +581,17 @@ PrefabInstance:
 --- !u!114 &5196972058000242596 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6959506903447846869, guid: a64bbb2fa918b3b44a2de7cf2f0d12b4, type: 3}
+  m_PrefabInstance: {fileID: 2921279432358299761}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7666997249716580856 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4822472611107699081, guid: a64bbb2fa918b3b44a2de7cf2f0d12b4, type: 3}
   m_PrefabInstance: {fileID: 2921279432358299761}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

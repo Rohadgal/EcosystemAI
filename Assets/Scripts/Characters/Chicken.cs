@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public enum chickenStates { None, Wandering, Seeking, Eating, Evading, Dead}
+public enum chickenStates { None, Wandering, Seeking, Drinking, Eating, Evading, Dead}
 
 
 [RequireComponent(typeof(Animal))]
@@ -27,8 +27,10 @@ public class Chicken : MonoBehaviour
             _animal.rb = GetComponent<Rigidbody>();
         }
         _chickenStates = chickenStates.Wandering;
+        _animal.setThirst(0f);
         _animal.setHunger(0f);
         hungerSystem();
+        thirstSystem();
         
     }
 
@@ -38,6 +40,7 @@ public class Chicken : MonoBehaviour
 
     private void Update() {
        hungerSystem();
+       thirstSystem();
        survivalSystem();
     }
 
@@ -137,6 +140,13 @@ public class Chicken : MonoBehaviour
         float currentHungerLevel = _animal.getHunger() + hungerIncrement;
         _animal.setHunger(currentHungerLevel);
         _animal.updateHungerBar(_animal.getHunger());
+    }
+
+    void thirstSystem() {
+        float thirstIncrement = 0.2f;
+        float currentThirstLevel = _animal.getThirst() + thirstIncrement;
+        _animal.setThirst(currentThirstLevel);
+        _animal.updateThirstBar(_animal.getThirst());
     }
 
     void survivalSystem() {

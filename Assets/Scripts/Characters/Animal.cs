@@ -245,6 +245,12 @@ public class Animal : MonoBehaviour
         }
     }
 
+    public void updateThirstBar(float currentThirst) {
+        if(m_thirstBarSprite != null) {
+            m_thirstBarSprite.fillAmount = currentThirst / _maxLevel;
+        }
+    }
+
     /// <summary>
     /// Coroutine to deactivate the object after a certain time.
     /// </summary>
