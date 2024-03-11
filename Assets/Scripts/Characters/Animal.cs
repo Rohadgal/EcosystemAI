@@ -92,7 +92,7 @@ public class Animal : MonoBehaviour
     /// Steering behavior for the "Wandering" state.
     /// </summary>
     void wander() {
-        SteeringBehaviours.wander(this, 550, 15, 180);
+        SteeringBehaviours.wander(this, 100, 50, 180);
     }
 
     /// <summary>
@@ -256,8 +256,13 @@ public class Animal : MonoBehaviour
     #endregion
 
     void OnDrawGizmos() {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(this.transform.position, m_perceptionRadius);
+        if(m_target != null) {
+
+            Gizmos.color = Color.red;
+           // Gizmos.DrawWireSphere(this.transform.position, m_perceptionRadius);
+            //Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(this.transform.position, m_target.transform.position);
+        }
     }
 
     //private void OnCollisionEnter(Collision collision) {

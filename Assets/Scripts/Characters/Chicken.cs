@@ -14,6 +14,7 @@ public class Chicken : MonoBehaviour
     public List<GameObject> _perceivedObjects;
     bool isHungry = false, isSatisfied = true;
     GameObject target;
+    float closestFood = Mathf.Infinity;
 
     // Start is called before the first frame update
     void Start()
@@ -43,28 +44,39 @@ public class Chicken : MonoBehaviour
     void perceptionManager() {
         Collider[] perceivedObjects = Physics.OverlapSphere(_animal.getPos(), _animal.getPerceptionRadius());
         if(isHungry) {
-            float closestFood = Mathf.Infinity;
-            foreach(Collider col in perceivedObjects) {
-                if(col.gameObject.CompareTag("grass") && !_perceivedObjects.Contains(col.gameObject)) {
-                    _perceivedObjects.Add(col.gameObject);
-                    float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
-                    if(dist < closestFood) {
-                        closestFood = dist;
-                        target = col.gameObject;
-                        Debug.Log("Chicken: " + gameObject.name + " Distance: " + Vector3.Distance(transform.position, target.gameObject.transform.position));
-                    }
+            seekFood(perceivedObjects);
+            
+        }
+        decisionManager(_perceivedObjects);
+    }
+
+    void seekFood(Collider[] t_perceivedObjects) {
+        foreach (Collider col in t_perceivedObjects) {
+            if (col.gameObject.CompareTag("grass") && col.gameObject.GetComponent<CapsuleCollider>().enabled && !_perceivedObjects.Contains(col.gameObject)) {
+                _perceivedObjects.Add(col.gameObject);
+                float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
+                if (dist < closestFood && col.gameObject.GetComponent<CapsuleCollider>().enabled) {
+                    closestFood = dist;
+                    target = col.gameObject;
+                    //Debug.Log("Chicken: " + gameObject.name + " Distance: " + Vector3.Distance(transform.position, target.gameObject.transform.position));
                 }
             }
         }
-        decisionManager(_perceivedObjects);
     }
 
     void decisionManager(List<GameObject> t_perceivedObjects) {
         //if(t_perceivedObjects != null && _perceivedObjects.Count == 0) { return; }
 
         if (isHungry) {
+            if (!target.GetComponent<CapsuleCollider>().enabled) {
+                closestFood = Mathf.Infinity;
+                return;
+            }
+
             _animal.setTarget(target);
             _chickenStates = chickenStates.Seeking;
+
+            
 
             if(Vector3.Distance(transform.position, target.transform.position) <= 2f) {
                 _chickenStates = chickenStates.Eating;
@@ -130,7 +142,7 @@ public class Chicken : MonoBehaviour
     void survivalSystem() {
         float feelHungry = 20f;
         if(_animal.getHunger() > feelHungry) {
-            Debug.LogWarning("hungry: " + isHungry);
+            //Debug.LogWarning("hungry: " + isHungry);
             isHungry = true;
             isSatisfied = false;
         }
@@ -139,6 +151,8 @@ public class Chicken : MonoBehaviour
     void eat(GameObject _food) {
         _food.GetComponent<CapsuleCollider>().enabled = false;
         _food.GetComponent<MeshRenderer>().enabled = false;
+        closestFood = Mathf.Infinity;
+        _animal.setTarget(null);
         _animal.setHunger(0f);
         isSatisfied = true;
     }
