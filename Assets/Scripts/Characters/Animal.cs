@@ -27,14 +27,19 @@ public class Animal : MonoBehaviour
     Animator m_animator;
 
     #region UI
-    //[SerializeField]
-    //Image m_reproductiveUrgeBarSprite;
-    //[SerializeField]
-    //GameObject m_reproductiveUrgeGameObject;
+    [SerializeField]
+    Image m_reproductiveUrgeBarSprite, m_hungerBarSprite, m_thirstBarSprite;
+    [SerializeField]
+    GameObject m_needsCanvasGameObject;
     private Camera m_camera;
     #endregion
 
+    #region Animal Characteristics
+    bool isFemale;
+    float _hunger, _thirst, _urge, _maxLevel = 100f;
     public Rigidbody rb;
+    #endregion
+
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +58,10 @@ public class Animal : MonoBehaviour
             case AnimalState.Evade: evade(); break;
             case AnimalState.Wander: wander(); break;
             default: break;
+        }
+
+        if(m_needsCanvasGameObject != null) {
+            m_needsCanvasGameObject.transform.rotation = Quaternion.LookRotation(m_needsCanvasGameObject.transform.position - m_camera.transform.position);
         }
     }
 
@@ -82,7 +91,7 @@ public class Animal : MonoBehaviour
     /// Steering behavior for the "Wandering" state.
     /// </summary>
     void wander() {
-        SteeringBehaviours.wander(this, 550, 15, 0);
+        SteeringBehaviours.wander(this, 550, 15, 90);
     }
 
     /// <summary>
@@ -136,6 +145,14 @@ public class Animal : MonoBehaviour
     /// Gets the target of the agent.
     /// </summary>
     public GameObject getTarget() { return m_target; }
+
+    public bool getIsFemale() { return isFemale; }
+
+    public float getHunger() { return _hunger; }
+
+    public float getThirst() { return _thirst; }
+
+    public float getUrge() { return _urge; }
     #endregion
 
     #region Setters
@@ -155,6 +172,7 @@ public class Animal : MonoBehaviour
                 break;
             case AnimalState.Idle:
                 m_animator.SetBool("isIdle", true);
+                rb.velocity = Vector3.zero;
                 break;
             case AnimalState.Seek:
                 m_animator.SetBool("isSeeking", true);
@@ -202,10 +220,27 @@ public class Animal : MonoBehaviour
         m_maxSpeed = t_maxSpeed;
     }
 
-    public void updateHealthBar(float maxHealthBar, float currentHealth) {
-        //if (m_reproductiveUrgeBarSprite != null) {
-        //    m_reproductiveUrgeBarSprite.fillAmount = currentHealth / maxHealthBar;
-        //}
+    public void setGender(bool t_isFemale) {
+        isFemale = t_isFemale;
+    }
+
+    public void setHunger(float t_hunger) { 
+        _hunger = t_hunger;
+    }
+
+    public void setThirst(float t_thirst) {
+        _thirst = t_thirst;
+    }
+
+    public void setUrge(float t_urge) {
+        _urge = t_urge;
+    }
+
+
+    public void updateHungerBar(float currentHunger) {
+        if(m_hungerBarSprite != null) {
+            m_hungerBarSprite.fillAmount = currentHunger / _maxLevel;
+        }
     }
 
     /// <summary>

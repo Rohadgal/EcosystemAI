@@ -330,6 +330,8 @@
 -r:"C:/Program Files/Unity/Hub/Editor/2022.3.10f1/Editor/Data/PlaybackEngines/AndroidPlayer/Unity.Android.Types.dll"
 -r:"Library/PackageCache/com.unity.testtools.codecoverage@1.2.4/lib/ReportGenerator/ReportGeneratorMerged.dll"
 -r:"Library/PackageCache/com.unity.visualscripting@1.9.0/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/CodeMonkey_HealthSystem.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/CodeMonkey_HealthSystem_Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.EditorCoroutines.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.Performance.Profile-Analyzer.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.PlasticSCM.Editor.ref.dll"
@@ -362,6 +364,7 @@
 "Assets/Scripts/Managers/GameManager.cs"
 "Assets/Scripts/Managers/LevelManager.cs"
 "Assets/Scripts/Managers/MenuManager.cs"
+"Assets/Scripts/SpectatorCameraController.cs"
 "Assets/Scripts/SteeringBehaviours/SteeringBehaviours.cs"
 "Assets/VoxelAnimals/Assets/Scripts/PlayerController.cs"
 -langversion:9.0

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -68,5 +68,9 @@ public class MenuManager : MonoBehaviour
             inputValue = 2;
         }
         return inputValue;
+    }
+
+    public void goToLevel() {
+        SceneManager.LoadScene(1);
     }
 }

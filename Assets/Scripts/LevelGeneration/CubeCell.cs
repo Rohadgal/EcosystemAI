@@ -51,10 +51,10 @@ public class CubeCell : MonoBehaviour
                     Color brownColor = new Vector4(1f, .5f, .5f, 1f);
                     _meshRenderer.material.color = brownColor;
                     (tree.GetComponent<MeshRenderer>().enabled ? tree : grass).GetComponent<MeshRenderer>().enabled = false;
-                    if (tree.GetComponent<CapsuleCollider>().enabled) {
-                        tree.GetComponent<CapsuleCollider>().enabled = false;
-                    }
-                    //(tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
+                    //if (tree.GetComponent<CapsuleCollider>().enabled) {
+                    //    tree.GetComponent<CapsuleCollider>().enabled = false;
+                    //}
+                    (tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
                     break;
                 case CellType.Grass:
                     this.GetComponent<BoxCollider>().enabled = false;
@@ -72,11 +72,11 @@ public class CubeCell : MonoBehaviour
                     Color blueColor = new Vector4(.4f, .6f, .9f, 1f);
                     _meshRenderer.material.color = blueColor;
                     (tree.GetComponent<MeshRenderer>().enabled ? tree : grass).GetComponent<MeshRenderer>().enabled = false;
-                    if (tree.GetComponent<CapsuleCollider>().enabled) {
-                        tree.GetComponent<CapsuleCollider>().enabled = false;
-                    }
+                    //if (tree.GetComponent<CapsuleCollider>().enabled) {
+                    //    tree.GetComponent<CapsuleCollider>().enabled = false;
+                    //}
                     this.GetComponent<BoxCollider>().enabled = true;
-                    //(tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
+                    (tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
                     break;
                 default: Debug.Log("Incorrect cellType"); break;
             }
