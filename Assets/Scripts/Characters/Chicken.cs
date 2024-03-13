@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public enum chickenStates { None, Wandering, Seeking, Drinking, Eating, Evading, Dead}
+public enum chickenStates { None, Wandering, Seeking, Drinking, Eating, Reproducing, Evading, Dead}
 
 
 [RequireComponent(typeof(Animal))]
@@ -12,31 +12,27 @@ public class Chicken : MonoBehaviour
 {
     Animal _animal;
     chickenStates _chickenStates;
-    public List<GameObject> _perceivedFood, _perceivedWater;
-    bool isHungry = false, isThirsty = false, isSatisfied = true;
-    GameObject foodTarget, waterTarget;
-    float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity;
+    public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner;
+    bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true;
+    GameObject foodTarget, waterTarget, partnerTarget;
+    float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity;
+    float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
+    [SerializeField]
+    GameObject chickenPrefab;
     
-
     // Start is called before the first frame update
     void Start()
     {
-       // _animal.updateHungerBar(_animal.getHunger());
-
         _animal = GetComponent<Animal>();
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
-        //if(_animal.rb == null) {
-        //    _animal.rb = GetComponent<Rigidbody>();
-        //}
         _chickenStates = chickenStates.Wandering;
         _animal.setThirst(0f);
         _animal.setHunger(0f);
-        hungerSystem();
-        thirstSystem();
-
-        setGenes();
         
+        setGenes();
+
+        survivalSystem();  
     }
 
     private void FixedUpdate() {
@@ -44,23 +40,30 @@ public class Chicken : MonoBehaviour
     }
 
     private void Update() {
-       hungerSystem();
-       thirstSystem();
        survivalSystem();
     }
 
     void perceptionManager() {
         Collider[] perceivedObjects = Physics.OverlapSphere(_animal.getPos(), _animal.getPerceptionRadius());
         if (isHungry) {
-            seekFood(perceivedObjects);
-            //decisionManager();
-            //return;
+            if (perceivedObjects != null && perceivedObjects.Length != 0) {
+                seekFood(perceivedObjects);
+                //decisionManager();
+                //return;
+            }
         }
         if (isThirsty) {
             if(perceivedObjects != null && perceivedObjects.Length != 0) {
                 seekWater(perceivedObjects);
                // decisionManager();
                // return;
+            }
+        }
+        if (hasUrge) {
+            if (perceivedObjects != null && perceivedObjects.Length != 0) {
+                seekPartner(perceivedObjects);
+                // decisionManager();
+                // return;
             }
         }
 
@@ -86,7 +89,7 @@ public class Chicken : MonoBehaviour
             foreach(Collider col in t_perceivedObjects) {
                
                 if(col.gameObject.CompareTag("water") && !_perceivedWater.Contains(col.gameObject)) {
-                    _perceivedWater.Add(col.gameObject) ;
+                    _perceivedWater.Add(col.gameObject);
                     float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
                     if(dist < closestWater) {
                         closestWater = dist;
@@ -96,6 +99,25 @@ public class Chicken : MonoBehaviour
                 }
             }
            // decisionManager();
+        }
+    }
+
+    void seekPartner(Collider[] t_perceivedObjects) {
+        if(t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
+            foreach(Collider col in t_perceivedObjects) {
+                if(col.gameObject.CompareTag("chicken") && col.gameObject.GetComponent<Animal>().getIsFemale() != _animal.getIsFemale() 
+                    && !col.gameObject.GetComponent<Chicken>().getIsBusy() && col.gameObject.GetComponent<Chicken>().hasUrge
+                    && !_perceivedPartner.Contains(col.gameObject)) {
+                    _perceivedPartner.Add(col.gameObject);
+                    float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
+                    if(dist < closestPartner) {
+                        closestPartner = dist;
+                        partnerTarget = col.gameObject;
+                        isBusy = true;
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -115,15 +137,12 @@ public class Chicken : MonoBehaviour
              _animal.setTarget(foodTarget);
              _chickenStates = chickenStates.Seeking;
 
-
-
              if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
                  _chickenStates = chickenStates.Eating;
                  
                  actionManager();
                  return;
              }
-           
         }
 
         if (isThirsty && waterTarget != null) {
@@ -134,6 +153,18 @@ public class Chicken : MonoBehaviour
             if(Vector3.Distance(transform.position, waterTarget.transform.position) <= 2f) {
                 _chickenStates = chickenStates.Drinking;
                   
+                actionManager();
+                return;
+            }
+        }
+
+        if(hasUrge && partnerTarget != null) {
+            _animal.setTarget(partnerTarget);
+            _chickenStates = chickenStates.Seeking;
+
+            if(Vector3.Distance(transform.position, partnerTarget.transform.position) <= 2f) {
+                Debug.Log("Reproduce");
+                _chickenStates = chickenStates.Reproducing;
                 actionManager();
                 return;
             }
@@ -183,35 +214,21 @@ public class Chicken : MonoBehaviour
                 break;
             case chickenStates.Drinking:
                 _animal.ChangeAnimalState(AnimalState.Eat);
-                
-                
                 drink(waterTarget);
                // _perceivedWater.Clear();
+                break;
+            case chickenStates.Reproducing:
+                _animal.ChangeAnimalState(AnimalState.Reproduce);
+                reproduce(partnerTarget); 
                 break;
              default : break;
         }
     }
 
-    void hungerSystem() {
-        float hungerIncrement = 0.1f;
-        float currentHungerLevel = _animal.getHunger() + hungerIncrement;
-        _animal.setHunger(currentHungerLevel);
-        _animal.updateHungerBar(_animal.getHunger());
-    }
-
-    void thirstSystem() {
-        float thirstIncrement = 0.12f;
-        float currentThirstLevel = _animal.getThirst() + thirstIncrement;
-        _animal.setThirst(currentThirstLevel);
-        _animal.updateThirstBar(_animal.getThirst());
-    }
-
     void survivalSystem() {
-        //float feelHungry = 20f;
-        //float feelThirst = 40f;
-        //float feelUrge = 70f;
-
-
+        _animal._gene.hungerSystem(_animal, hungerIncrement);
+        _animal._gene.thirstSystem(_animal, thirstIncrement);
+        _animal._gene.urgeSystem(_animal, urgeIncrement);
 
         if (_animal.getHunger() > _animal._gene.feelHungry) {
             //Debug.LogWarning("hungry: " + isHungry);
@@ -222,12 +239,14 @@ public class Chicken : MonoBehaviour
             isThirsty = true;
             isSatisfied = false;
         }
-        //if(_animal.getUrge() > feelUrge) {
-
-        //}
+        if (_animal.getUrge() > _animal._gene.feelUrge) {
+            hasUrge = true;
+        }
     }
 
     void setGenes() {
+        _animal.setGender(Random.Range(0, 150) < 75f);
+        Debug.Log(_animal.getIsFemale());
         _animal._gene.feelHungry = 20f;
         _animal._gene.feelThirst = 40f;
         _animal._gene.feelUrge = 60f;
@@ -257,5 +276,22 @@ public class Chicken : MonoBehaviour
         }
         _animal.setThirst(0f);
         isSatisfied=true;
+    }
+
+    void reproduce(GameObject t_partner) {
+        if(_animal.getIsFemale()) {
+            _animal.procreate(t_partner.GetComponent<Animal>(), chickenPrefab);
+            _animal.setUrge(0f);
+            //hasUrge = false;
+            //t_partner.GetComponent<Chicken>().setUrge(false);
+        }
+        //hasUrge = false
+
+    }
+
+    public bool getIsBusy() { return isBusy; }
+    
+    public void setUrge(bool t_hasUrge) {
+        hasUrge =t_hasUrge;
     }
 }

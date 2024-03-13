@@ -6,6 +6,7 @@ TagManager:
   tags:
   - grass
   - water
+  - chicken
   layers:
   - Default
   - TransparentFX

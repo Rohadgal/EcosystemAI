@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
-public enum AnimalState { None, Idle, Eat, Seek, Pursuit, Evade, Wander }
+public enum AnimalState { None, Idle, Eat, Seek, Pursuit, Evade, Wander, Reproduce }
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent (typeof(Animator))]
@@ -46,6 +46,24 @@ public class Animal : MonoBehaviour
         public float feelHungry { get; set; }
         public float feelThirst { get; set; }
         public float feelUrge { get; set;}
+
+        public void hungerSystem(Animal t_animal, float t_increment) {
+            float currentHungerLevel = t_animal.getHunger() + t_increment;
+            t_animal.setHunger(currentHungerLevel);
+            t_animal.updateHungerBar(t_animal.getHunger());
+        }
+
+        public void thirstSystem(Animal t_animal, float t_increment) {
+            float currentThirstLevel = t_animal.getThirst() + t_increment;
+            t_animal.setThirst(currentThirstLevel);
+            t_animal.updateThirstBar(t_animal.getThirst());
+        }
+
+        public void urgeSystem(Animal t_animal, float t_increment) {
+            float currentUrgeLevel = t_animal.getUrge() + t_increment;
+            t_animal.setUrge(currentUrgeLevel);
+            t_animal.updateUrgeBar(t_animal.getUrge());
+        }
     }
 
     private void Awake() {
@@ -68,6 +86,7 @@ public class Animal : MonoBehaviour
             case AnimalState.Pursuit: pursuit(); break;
             case AnimalState.Evade: evade(); break;
             case AnimalState.Wander: wander(); break;
+            case AnimalState.Reproduce: break;
             default: break;
         }
 
@@ -103,7 +122,6 @@ public class Animal : MonoBehaviour
     /// </summary>
     void wander() {
         SteeringBehaviours.wander(this, 280, 150, 90);
-        Debug.Log(rb.velocity);
     }
 
     /// <summary>
@@ -202,6 +220,9 @@ public class Animal : MonoBehaviour
             case AnimalState.Wander:
                 m_animator.SetBool("isWandering", true);
                 break;
+            case AnimalState.Reproduce:
+                m_animator.SetBool("isIdle", true);
+                break;
             default: break;
         }
     }
@@ -262,6 +283,12 @@ public class Animal : MonoBehaviour
         }
     }
 
+    public void updateUrgeBar(float currentUrge) {
+        if(m_reproductiveUrgeBarSprite != null) {
+            m_reproductiveUrgeBarSprite.fillAmount= currentUrge / _maxLevel;
+        }
+    }
+
     /// <summary>
     /// Coroutine to deactivate the object after a certain time.
     /// </summary>
@@ -282,22 +309,30 @@ public class Animal : MonoBehaviour
         }
     }
 
-    //private void OnCollisionEnter(Collision collision) {
-    //    if (collision.gameObject.GetComponent<CubeCell>() != null) {
-    //        if (collision.gameObject.GetComponent<CubeCell>().getCellType() == CellType.Water) {
-    //            SteeringBehaviours.addSteringForce(this, new Vector3(rb.velocity.z, this.transform.position.y, rb.velocity.x));
-    //            rb.AddTorque(new Vector3(0f, 90f, 0f), ForceMode.Impulse);
-    //            Debug.LogWarning("collided");
-    //        }
-    //    }
-    //}
+    Gene GenerateOffspringGene(Gene partnerGene) {
+        Gene offspringGene = new Gene();
+        offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * 0.5f;
+        offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * 0.5f;
+        offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * 0.5f;
 
-    //private void OnCollisionStay(Collision collision) {
-    //    if (collision.gameObject.GetComponent<CubeCell>() != null) {
-    //        if (collision.gameObject.GetComponent<CubeCell>().getCellType() == CellType.Water) {
-    //            rb.AddTorque(new Vector3(0f, 90f, 0f), ForceMode.Impulse);
-    //            Debug.LogWarning("collided stay");
-    //        }
-    //    }
-    //}
+        return offspringGene;
+    }
+
+    public void procreate(Animal t_partner, GameObject t_prefab) {
+        Gene offspringGene = GenerateOffspringGene(t_partner._gene);
+
+        Animal offspringOne = instantiateOffspring(t_prefab);
+        Animal offspringTwo = instantiateOffspring(t_prefab);
+
+        offspringOne._gene = offspringGene;
+        offspringTwo._gene = offspringGene;
+    }
+
+    public Animal instantiateOffspring(GameObject t_animalTypePrefab) {
+        GameObject offspring = Instantiate(t_animalTypePrefab, transform.position, Quaternion.identity);
+
+        Animal offspringAnimal = offspring.GetComponent<Animal>();
+
+        return offspringAnimal;
+    }
 }
