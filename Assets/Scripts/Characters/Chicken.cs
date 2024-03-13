@@ -12,10 +12,10 @@ public class Chicken : MonoBehaviour
 {
     Animal _animal;
     chickenStates _chickenStates;
-    public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner;
-    bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true;
-    GameObject foodTarget, waterTarget, partnerTarget;
-    float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity;
+    public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner, _perceivedThreats;
+    bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true, isInDanger = false;
+    GameObject foodTarget, waterTarget, partnerTarget, hunterTarget;
+    float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity, closestThreat = Mathf.Infinity;
     float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
     [SerializeField]
     GameObject chickenPrefab;
@@ -26,6 +26,8 @@ public class Chicken : MonoBehaviour
         _animal = GetComponent<Animal>();
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
+        _perceivedPartner = new List<GameObject>();
+        _perceivedThreats = new List<GameObject>();
         _chickenStates = chickenStates.Wandering;
         //_animal.setThirst(0f);
         //_animal.setHunger(0f);
@@ -45,29 +47,55 @@ public class Chicken : MonoBehaviour
 
     void perceptionManager() {
         Collider[] perceivedObjects = Physics.OverlapSphere(_animal.getPos(), _animal.getPerceptionRadius());
+
+        if(perceivedObjects != null && perceivedObjects.Length > 0) {
+            perceivePredator(perceivedObjects);
+        }
+
         if (isHungry) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
+            if (perceivedObjects != null && perceivedObjects.Length > 0) {
                 seekFood(perceivedObjects);
                 //decisionManager();
                 //return;
             }
         }
         if (isThirsty) {
-            if(perceivedObjects != null && perceivedObjects.Length != 0) {
+            if(perceivedObjects != null && perceivedObjects.Length > 0) {
                 seekWater(perceivedObjects);
-               // decisionManager();
-               // return;
             }
         }
         if (hasUrge) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
+            if (perceivedObjects != null && perceivedObjects.Length > 0) {
                 seekPartner(perceivedObjects);
-                // decisionManager();
-                // return;
             }
         }
 
         decisionManager();
+    }
+
+    void perceivePredator(Collider[] perceivedObjects) {
+        foreach(Collider col in perceivedObjects) {
+            if(col.gameObject.CompareTag("cat") || col.gameObject.CompareTag("dog") || col.gameObject.CompareTag("lion")) {
+                _perceivedThreats.Add(col.gameObject);
+                float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
+                if (dist < closestThreat) {
+                    closestThreat = dist;
+                    hunterTarget = col.gameObject;
+                    isInDanger = true;
+                }
+            }
+        }
+        bool isSafe = true;
+        foreach(GameObject predator in _perceivedThreats) {
+            if(Vector3.Distance(transform.position, predator.transform.position) < _animal.getPerceptionRadius()){
+                isSafe = false;
+            }
+        }
+        if( isSafe) {
+            isInDanger = false;
+            closestThreat = Mathf.Infinity;
+            hunterTarget = null;
+        }
     }
 
     void seekFood(Collider[] t_perceivedObjects) {
@@ -123,20 +151,25 @@ public class Chicken : MonoBehaviour
 
     void decisionManager() {
         //if(t_perceivedObjects != null && _perceivedObjects.Count == 0) { return; }
-
         //if(_animal.getHunger() > _animal.getThirst()) { 
         //}
 
+        if(isInDanger) {
+            movementManager();
+            if(hunterTarget != null) {
+                _animal.setTarget(hunterTarget);
+            }
+            _chickenStates = chickenStates.Evading;
+            return;
+        }
+
         if (isHungry && foodTarget != null /*&& !hasUrge*/) {
-           
              if (!foodTarget.GetComponent<CapsuleCollider>().enabled) {
                  closestFood = Mathf.Infinity;
                  return;
              }
-
              _animal.setTarget(foodTarget);
              _chickenStates = chickenStates.Seeking;
-
              if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
                  _chickenStates = chickenStates.Eating;
                  
@@ -173,19 +206,6 @@ public class Chicken : MonoBehaviour
         if(isSatisfied) {
             _chickenStates = chickenStates.Wandering;
         }
-
-        //foreach(GameObject grass in t_perceivedObjects) {
-        //    this.transform.LookAt(grass.transform.position);
-        //    _animal.setTarget(grass.gameObject);
-        //    _chickenStates = chickenStates.Seeking;
-
-        //}
-
-        //switch (_chickenStates) {
-        //    case chickenStates.Wandering: movementManager(); break;
-        //    case chickenStates.Seeking: movementManager(); break;
-        //    default: break;
-        //}
         movementManager();
         actionManager();
     }
@@ -201,6 +221,9 @@ public class Chicken : MonoBehaviour
                 break;
             case chickenStates.Seeking:
                 _animal.ChangeAnimalState(AnimalState.Seek);
+                break;
+            case chickenStates.Evading:
+                _animal.ChangeAnimalState(AnimalState.Evade);
                 break;
             default: break;
         }

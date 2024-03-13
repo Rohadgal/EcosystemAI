@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\SpectatorCameraController.cs" />
     <Compile Include="Assets\Scripts\LevelGeneration\CubeCell.cs" />
+    <Compile Include="Assets\Scripts\Characters\Lion.cs" />
     <Compile Include="Assets\Scripts\Characters\Dog.cs" />
     <Compile Include="Assets\Scripts\Characters\Animal.cs" />
     <Compile Include="Assets\VoxelAnimals\Assets\Scripts\PlayerController.cs" />

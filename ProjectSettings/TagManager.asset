@@ -9,6 +9,7 @@ TagManager:
   - chicken
   - cat
   - dog
+  - lion
   layers:
   - Default
   - TransparentFX

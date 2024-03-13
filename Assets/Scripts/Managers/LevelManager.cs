@@ -30,7 +30,11 @@ public class LevelManager : MonoBehaviour
 
     void spawnAnimals() {
         if(lion != null) {
-
+            numberOfAnimalsToSpawn = GameManager.s_instance.numberOfLions;
+            for (int i = 0; i < numberOfAnimalsToSpawn; i++) {
+                Vector3 randomPos = getRandomSpawnPos();
+                Instantiate(lion, randomPos, Quaternion.identity);
+            }
         }
         if(dog != null) {
             numberOfAnimalsToSpawn = GameManager.s_instance.numberOfDogs;

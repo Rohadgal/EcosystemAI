@@ -361,6 +361,7 @@
 "Assets/Scripts/Characters/Cat.cs"
 "Assets/Scripts/Characters/Chicken.cs"
 "Assets/Scripts/Characters/Dog.cs"
+"Assets/Scripts/Characters/Lion.cs"
 "Assets/Scripts/LevelGeneration/CubeCell.cs"
 "Assets/Scripts/LevelGeneration/LevelGenerator.cs"
 "Assets/Scripts/Managers/GameManager.cs"
