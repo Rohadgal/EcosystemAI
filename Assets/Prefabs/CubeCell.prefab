@@ -123,6 +123,7 @@ MonoBehaviour:
   _cellType: 0
   tree: {fileID: 7953409378191248158}
   grass: {fileID: 6571893038662065952}
+  waterTag: water
 --- !u!1 &6571893038662065952
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +335,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.23
+  m_Radius: 0.08
   m_Height: 4.9843674
   m_Direction: 1
   m_Center: {x: 0, y: 2.55, z: -0.07}

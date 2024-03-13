@@ -16,6 +16,7 @@ public class Chicken : MonoBehaviour
     bool isHungry = false, isThirsty = false, isSatisfied = true;
     GameObject foodTarget, waterTarget;
     float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -25,14 +26,16 @@ public class Chicken : MonoBehaviour
         _animal = GetComponent<Animal>();
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
-        if(_animal.rb == null) {
-            _animal.rb = GetComponent<Rigidbody>();
-        }
+        //if(_animal.rb == null) {
+        //    _animal.rb = GetComponent<Rigidbody>();
+        //}
         _chickenStates = chickenStates.Wandering;
         _animal.setThirst(0f);
         _animal.setHunger(0f);
         hungerSystem();
         thirstSystem();
+
+        setGenes();
         
     }
 
@@ -50,11 +53,14 @@ public class Chicken : MonoBehaviour
         Collider[] perceivedObjects = Physics.OverlapSphere(_animal.getPos(), _animal.getPerceptionRadius());
         if (isHungry) {
             seekFood(perceivedObjects);
-
+            //decisionManager();
+            //return;
         }
         if (isThirsty) {
             if(perceivedObjects != null && perceivedObjects.Length != 0) {
                 seekWater(perceivedObjects);
+               // decisionManager();
+               // return;
             }
         }
 
@@ -76,6 +82,7 @@ public class Chicken : MonoBehaviour
 
     void seekWater(Collider[] t_perceivedObjects) {
         if(t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
+           // closestWater = Mathf.Infinity;
             foreach(Collider col in t_perceivedObjects) {
                
                 if(col.gameObject.CompareTag("water") && !_perceivedWater.Contains(col.gameObject)) {
@@ -84,6 +91,7 @@ public class Chicken : MonoBehaviour
                     if(dist < closestWater) {
                         closestWater = dist;
                         waterTarget = col.gameObject;
+                        return;
                     }
                 }
             }
@@ -97,32 +105,35 @@ public class Chicken : MonoBehaviour
         //if(_animal.getHunger() > _animal.getThirst()) { 
         //}
 
-        if (isHungry) {
-            if (!foodTarget.GetComponent<CapsuleCollider>().enabled) {
-                closestFood = Mathf.Infinity;
-                return;
-            }
+        if (isHungry && foodTarget != null) {
+           
+             if (!foodTarget.GetComponent<CapsuleCollider>().enabled) {
+                 closestFood = Mathf.Infinity;
+                 return;
+             }
 
-            _animal.setTarget(foodTarget);
-            _chickenStates = chickenStates.Seeking;
+             _animal.setTarget(foodTarget);
+             _chickenStates = chickenStates.Seeking;
 
 
 
-            if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
-                _chickenStates = chickenStates.Eating;
-                isHungry = false;
-                actionManager();
-                return;
-            }
+             if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
+                 _chickenStates = chickenStates.Eating;
+                 
+                 actionManager();
+                 return;
+             }
+           
         }
 
-        if (isThirsty) {
+        if (isThirsty && waterTarget != null) {
+            
             _animal.setTarget(waterTarget);
             _chickenStates = chickenStates.Seeking;
 
             if(Vector3.Distance(transform.position, waterTarget.transform.position) <= 2f) {
                 _chickenStates = chickenStates.Drinking;
-                isThirsty = false;  
+                  
                 actionManager();
                 return;
             }
@@ -145,6 +156,7 @@ public class Chicken : MonoBehaviour
         //    default: break;
         //}
         movementManager();
+        actionManager();
     }
 
     void movementManager() {
@@ -157,7 +169,6 @@ public class Chicken : MonoBehaviour
                 _animal.ChangeAnimalState(AnimalState.Wander);
                 break;
             case chickenStates.Seeking:
-                Debug.Log("seek");
                 _animal.ChangeAnimalState(AnimalState.Seek);
                 break;
             default: break;
@@ -168,17 +179,14 @@ public class Chicken : MonoBehaviour
         switch(_chickenStates) {
             case chickenStates.Eating:
                 _animal.ChangeAnimalState(AnimalState.Eat);
-                
                 eat(foodTarget);
-                _perceivedFood.Clear();
-                
                 break;
             case chickenStates.Drinking:
                 _animal.ChangeAnimalState(AnimalState.Eat);
                 
                 
                 drink(waterTarget);
-                _perceivedWater.Clear();
+               // _perceivedWater.Clear();
                 break;
              default : break;
         }
@@ -199,35 +207,52 @@ public class Chicken : MonoBehaviour
     }
 
     void survivalSystem() {
-        float feelHungry = 20f;
-        float feelThirst = 40f;
-        if (_animal.getHunger() > feelHungry) {
+        //float feelHungry = 20f;
+        //float feelThirst = 40f;
+        //float feelUrge = 70f;
+
+
+
+        if (_animal.getHunger() > _animal._gene.feelHungry) {
             //Debug.LogWarning("hungry: " + isHungry);
             isHungry = true;
             isSatisfied = false;
         }
-        if (_animal.getThirst() > feelThirst) {
+        if (_animal.getThirst() > _animal._gene.feelThirst) {
             isThirsty = true;
             isSatisfied = false;
         }
+        //if(_animal.getUrge() > feelUrge) {
+
+        //}
+    }
+
+    void setGenes() {
+        _animal._gene.feelHungry = 20f;
+        _animal._gene.feelThirst = 40f;
+        _animal._gene.feelUrge = 60f;
     }
 
     void eat(GameObject _food) {
+        isHungry = false;
         _food.GetComponent<CapsuleCollider>().enabled = false;
         _food.GetComponent<MeshRenderer>().enabled = false;
+        _perceivedFood.Clear();
         closestFood = Mathf.Infinity;
-        foodTarget = null;
-        if (!isThirsty) {
-            _animal.setTarget(null);
-        }
+       // foodTarget = null;
+        //if (!isThirsty) {
+        //    _animal.setTarget(null);
+        //}
         _animal.setHunger(0f);
         isSatisfied = true;
     }
 
     void drink(GameObject _water) {
+        isThirsty = false;
+        _perceivedWater.Clear();
         closestWater = Mathf.Infinity;
-        waterTarget = null;
-        if(!isHungry) {
+        //waterTarget = null;
+        if (!isHungry) {
             _animal.setTarget(null);
         }
         _animal.setThirst(0f);

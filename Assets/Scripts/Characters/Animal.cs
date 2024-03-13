@@ -14,7 +14,7 @@ public class Animal : MonoBehaviour
 {
     #region Steering Behaviour Attributes
     [SerializeField]
-    float m_maxSpeed = 20f, m_maxForce = 10f, m_slowingRadius;
+    float m_maxSpeed = 15f, m_maxForce = 20f, m_slowingRadius;
     #endregion
 
     #region Perception
@@ -39,8 +39,18 @@ public class Animal : MonoBehaviour
     bool isFemale;
     float _hunger, _thirst, _urge, _maxLevel = 100f;
     public Rigidbody rb;
+    public Gene _gene;
     #endregion
 
+    public struct Gene {
+        public float feelHungry { get; set; }
+        public float feelThirst { get; set; }
+        public float feelUrge { get; set;}
+    }
+
+    private void Awake() {
+        _gene = new Gene();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -92,7 +102,8 @@ public class Animal : MonoBehaviour
     /// Steering behavior for the "Wandering" state.
     /// </summary>
     void wander() {
-        SteeringBehaviours.wander(this, 100, 50, 180);
+        SteeringBehaviours.wander(this, 280, 150, 90);
+        Debug.Log(rb.velocity);
     }
 
     /// <summary>

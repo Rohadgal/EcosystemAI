@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// Provides steering behaviors for agents, such as seeking, fleeing, pursuit, and more.
@@ -8,7 +9,7 @@ using UnityEngine;
 public class SteeringBehaviours : MonoBehaviour
 {
 
-
+    
     /// <summary>
     /// Slows down the agent on arrival to the target or accelerates the agent's flee speed.
     /// </summary>
@@ -35,8 +36,8 @@ public class SteeringBehaviours : MonoBehaviour
     public static void addSteringForce(Animal t_animal, Vector3 desiredVel) {
         Vector3 steeringForce = desiredVel - t_animal.rb.velocity;
         steeringForce = Vector3.ClampMagnitude(steeringForce, t_animal.getMaxForce());
-        steeringForce /= t_animal.rb.mass;
-        t_animal.rb.velocity = Vector3.ClampMagnitude(t_animal.rb.velocity + new Vector3(steeringForce.x, 0, steeringForce.z), t_animal.getMaxSpeed());
+        //steeringForce /= t_animal.rb.mass;
+        t_animal.rb.velocity = Vector3.ClampMagnitude(t_animal.rb.velocity + new Vector3(steeringForce.x, t_animal.transform.position.y, steeringForce.z), t_animal.getMaxSpeed());
        
         FaceForwardDirection(t_animal);
     }
@@ -50,7 +51,7 @@ public class SteeringBehaviours : MonoBehaviour
         Vector3 desiredVel = t_target - t_animal.transform.position;
         desiredVel.Normalize();
         desiredVel *= t_animal.getMaxSpeed();
-        desiredVel = arrival(t_animal, t_target, desiredVel);
+       // desiredVel = arrival(t_animal, t_target, desiredVel);
         addSteringForce(t_animal, desiredVel);
     }
 
@@ -98,6 +99,8 @@ public class SteeringBehaviours : MonoBehaviour
         futurePos.y = 0;
         return futurePos;
     }
+
+    public static float angleW;
     /// <summary>
     /// Slows down the agent on arrival to the target or accelerates the agent's flee speed.
     /// </summary>
@@ -107,16 +110,30 @@ public class SteeringBehaviours : MonoBehaviour
     public static void wander(Animal t_animal, float t_circleDistance, float t_circleRadius, float t_angleChange) {
         Vector3 circleCenter = t_animal.rb.velocity.normalized;
         circleCenter *= t_circleDistance;
-        float min = 0f, max = 6.2f;
-        Vector3 displacement = new Vector3(Random.Range(min, max), Random.Range(min, max), Random.Range(min, max)).normalized;
+        float min = -180f, max = 180f;
+
+        Vector3 displacement = new Vector3(0, 0, Random.Range(min, max)).normalized;
         displacement *= t_circleRadius;
+
+
         // Change angle just a bit, so it 
         // won't have the same value in the 
         // next game frame.
-        float angle = Random.Range(0f, 360f);
-        angle += (Random.Range(0f, 1f) * t_angleChange) - (t_angleChange * 0.5f);
-        Vector3 rotatedVector = Quaternion.AngleAxis(angle, Vector3.up) * displacement;
+        //angleW = Random.Range(0f, 360f);
+        angleW += (Random.Range(0f, 180f) * t_angleChange) - (t_angleChange * 0.5f);
+
+        float len = displacement.magnitude;
+
+        displacement.x = Mathf.Cos(angleW) * len;
+        displacement.y = Mathf.Sin(angleW) * len;
+
+        //angleW = Random.Range(0f, 360f);
+        angleW += (Random.Range(0f, 1f) * t_angleChange) - (t_angleChange * 0.5f);
+
+
+        // Vector3 rotatedVector = Quaternion.AngleAxis(angle, Vector3.up) * displacement;
         Vector3 wanderForce = circleCenter + displacement;
+        
         seek(t_animal, wanderForce);
     }
 
