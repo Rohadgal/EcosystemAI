@@ -633,8 +633,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lion: {fileID: 0}
-  dog: {fileID: 0}
-  cat: {fileID: 0}
+  dog: {fileID: 1903763909091086600, guid: c1f1d5844551dff42a3fb58f48885ab2, type: 3}
+  cat: {fileID: 8724575979993213932, guid: bcf6fd48994efa743827273fdd052a7d, type: 3}
   chicken: {fileID: 1585003939944451785, guid: 584992a00561c354c957d82d1bd8000b, type: 3}
   spawnAreaCenter: {x: 0, y: 0, z: 0}
   spawnAreaSize: {x: 50, y: 0, z: 50}

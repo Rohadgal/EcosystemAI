@@ -27,8 +27,8 @@ public class Chicken : MonoBehaviour
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
         _chickenStates = chickenStates.Wandering;
-        _animal.setThirst(0f);
-        _animal.setHunger(0f);
+        //_animal.setThirst(0f);
+        //_animal.setHunger(0f);
         
         setGenes();
 
@@ -94,7 +94,7 @@ public class Chicken : MonoBehaviour
                     if(dist < closestWater) {
                         closestWater = dist;
                         waterTarget = col.gameObject;
-                        return;
+                        return; 
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class Chicken : MonoBehaviour
                         closestPartner = dist;
                         partnerTarget = col.gameObject;
                         isBusy = true;
-                        return;
+                       // return;
                     }
                 }
             }
@@ -127,7 +127,7 @@ public class Chicken : MonoBehaviour
         //if(_animal.getHunger() > _animal.getThirst()) { 
         //}
 
-        if (isHungry && foodTarget != null) {
+        if (isHungry && foodTarget != null /*&& !hasUrge*/) {
            
              if (!foodTarget.GetComponent<CapsuleCollider>().enabled) {
                  closestFood = Mathf.Infinity;
@@ -145,7 +145,7 @@ public class Chicken : MonoBehaviour
              }
         }
 
-        if (isThirsty && waterTarget != null) {
+        if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
             
             _animal.setTarget(waterTarget);
             _chickenStates = chickenStates.Seeking;
@@ -163,7 +163,7 @@ public class Chicken : MonoBehaviour
             _chickenStates = chickenStates.Seeking;
 
             if(Vector3.Distance(transform.position, partnerTarget.transform.position) <= 2f) {
-                Debug.Log("Reproduce");
+             
                 _chickenStates = chickenStates.Reproducing;
                 actionManager();
                 return;
@@ -247,9 +247,9 @@ public class Chicken : MonoBehaviour
     void setGenes() {
         _animal.setGender(Random.Range(0, 150) < 75f);
         Debug.Log(_animal.getIsFemale());
-        _animal._gene.feelHungry = 20f;
-        _animal._gene.feelThirst = 40f;
-        _animal._gene.feelUrge = 60f;
+        _animal._gene.feelHungry = Random.Range(20f, 40f);
+        _animal._gene.feelThirst = Random.Range(30f, 50f);
+        _animal._gene.feelUrge = Random.Range(20,60f);
     }
 
     void eat(GameObject _food) {
@@ -280,10 +280,14 @@ public class Chicken : MonoBehaviour
 
     void reproduce(GameObject t_partner) {
         if(_animal.getIsFemale()) {
+            Debug.Log("Reproduce");
             _animal.procreate(t_partner.GetComponent<Animal>(), chickenPrefab);
             //hasUrge = false;
             //t_partner.GetComponent<Chicken>().setUrge(false);
         }
+        isBusy = false;
+        _perceivedPartner.Clear();
+        partnerTarget = null;
         _animal.setUrge(0f);
         hasUrge = false;
 

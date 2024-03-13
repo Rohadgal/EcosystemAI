@@ -222,6 +222,7 @@ public class Animal : MonoBehaviour
                 break;
             case AnimalState.Reproduce:
                 m_animator.SetBool("isIdle", true);
+                rb.velocity = Vector3.zero;
                 break;
             default: break;
         }
@@ -311,9 +312,13 @@ public class Animal : MonoBehaviour
 
     Gene GenerateOffspringGene(Gene partnerGene) {
         Gene offspringGene = new Gene();
-        offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * 0.5f;
-        offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * 0.5f;
-        offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * 0.5f;
+        float randomValue = 0.5f;
+        if(Random.Range(0,100) < 30) {
+            randomValue = Random.Range(0.2f,1.2f);
+        }
+        offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * randomValue;
+        offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * randomValue;
+        offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * randomValue;
 
         return offspringGene;
     }

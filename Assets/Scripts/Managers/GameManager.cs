@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     public int numberOfCats { get; private set; }
     public int numberOfChickens { get; private set; }
 
-    private GameState m_gameState;
+   // private GameState m_gameState;
     int levelIndex;
 
     // Awake is called when the script instance is being loaded
@@ -31,12 +31,12 @@ public class GameManager : MonoBehaviour
             s_instance = this;
         }
 
-        m_gameState = GameState.None;
+       // m_gameState = GameState.None;
     }
     // Start is called before the first frame update
     void Start()
     {
-        m_gameState = GameState.MainMenu;
+       // m_gameState = GameState.MainMenu;
     }
 
     // Update is called once per frame

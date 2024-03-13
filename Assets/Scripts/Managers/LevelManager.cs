@@ -33,10 +33,18 @@ public class LevelManager : MonoBehaviour
 
         }
         if(dog != null) {
-
+            numberOfAnimalsToSpawn = GameManager.s_instance.numberOfDogs;
+            for (int i = 0; i < numberOfAnimalsToSpawn; i++) {
+                Vector3 randomPos = getRandomSpawnPos();
+                Instantiate(dog, randomPos, Quaternion.identity);
+            }
         }
         if(cat != null) {
-
+            numberOfAnimalsToSpawn = GameManager.s_instance.numberOfCats;
+            for(int i = 0; i < numberOfAnimalsToSpawn; i++) {
+                Vector3 randomPos = getRandomSpawnPos();
+                Instantiate(cat, randomPos, Quaternion.identity);
+            }
         }
         if(chicken != null) {
             numberOfAnimalsToSpawn = GameManager.s_instance.numberOfChickens;
