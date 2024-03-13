@@ -281,11 +281,11 @@ public class Chicken : MonoBehaviour
     void reproduce(GameObject t_partner) {
         if(_animal.getIsFemale()) {
             _animal.procreate(t_partner.GetComponent<Animal>(), chickenPrefab);
-            _animal.setUrge(0f);
             //hasUrge = false;
             //t_partner.GetComponent<Chicken>().setUrge(false);
         }
-        //hasUrge = false
+        _animal.setUrge(0f);
+        hasUrge = false;
 
     }
 
