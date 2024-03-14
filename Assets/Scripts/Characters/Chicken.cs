@@ -43,6 +43,7 @@ public class Chicken : MonoBehaviour
 
     private void Update() {
        survivalSystem();
+        
     }
 
     void perceptionManager() {

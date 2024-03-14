@@ -10,8 +10,8 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     GameObject gridElement;
 
-    int gridWidth = 100;
-    int gridDepth = 100;
+    int gridWidth = 120;
+    int gridDepth = 120;
     public int iterations = 1;
 
     public int numGrass = 3;

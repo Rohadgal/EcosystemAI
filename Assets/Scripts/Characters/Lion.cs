@@ -122,7 +122,7 @@ public class Lion : MonoBehaviour
             _lionStates = lionStates.Seeking;
 
             if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 3f) {
-                Debug.LogWarning(Vector3.Distance(transform.position, foodTarget.transform.position));
+              //  Debug.LogWarning(Vector3.Distance(transform.position, foodTarget.transform.position));
                 _lionStates = lionStates.Eating;
 
                 actionManager();

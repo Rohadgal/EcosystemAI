@@ -344,8 +344,13 @@ public class Animal : MonoBehaviour
 
         float randomValue = Random.Range(1.2f, 2f);
 
-        float speed = ((t_partner.getMaxSpeed() + m_maxSpeed) * 0.5f) * randomValue;
-        float perceptionRadius = ((t_partner.getPerceptionRadius() + m_perceptionRadius) * 0.5f) * randomValue;
+        float speed = ((t_partner.getMaxSpeed() + m_maxSpeed) * 0.5f);
+        float perceptionRadius = ((t_partner.getPerceptionRadius() + m_perceptionRadius) * 0.5f);
+
+        if(Random.Range(0, 100) < 30) {
+            speed *= randomValue;
+            perceptionRadius *= randomValue;
+        }
 
         offspringOne.setMaxSpeed(speed);
         offspringOne.setPerceptionRadius(perceptionRadius);

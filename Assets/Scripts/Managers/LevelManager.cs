@@ -10,7 +10,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     GameObject lion, dog, cat, chicken;
     [SerializeField]
-    Vector3 spawnAreaCenter, spawnAreaSize;
+    Vector3 spawnAreaCenter = new Vector3(0,0,0), spawnAreaSize;
     int numberOfAnimalsToSpawn;
     #endregion
 
