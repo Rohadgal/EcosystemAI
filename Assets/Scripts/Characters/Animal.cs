@@ -13,8 +13,8 @@ public enum AnimalState { None, Idle, Eat, Seek, Pursuit, Evade, Wander, Reprodu
 public class Animal : MonoBehaviour
 {
     #region Steering Behaviour Attributes
-    [SerializeField]
-    float m_maxSpeed = 15f, m_maxForce = 20f, m_slowingRadius;
+   // [SerializeField]
+    float m_maxSpeed = 5f, m_maxForce = 12f, m_slowingRadius;
     #endregion
 
     #region Perception
@@ -68,6 +68,9 @@ public class Animal : MonoBehaviour
 
     private void Awake() {
         _gene = new Gene();
+        setMaxSpeed(Random.Range(3f, 9f));
+        setMaxForce(Random.Range(4f, 12f));
+        setPerceptionRadius(Random.Range(10f, 16f));
     }
 
     // Start is called before the first frame update
@@ -255,6 +258,10 @@ public class Animal : MonoBehaviour
         m_maxSpeed = t_maxSpeed;
     }
 
+    public void setMaxForce(float t_maxForce) {
+        m_maxForce = t_maxForce;
+    }
+
     public void setGender(bool t_isFemale) {
         isFemale = t_isFemale;
     }
@@ -290,6 +297,10 @@ public class Animal : MonoBehaviour
         }
     }
 
+    public void setPerceptionRadius(float radius) {
+        m_perceptionRadius = radius;
+    }
+
     /// <summary>
     /// Coroutine to deactivate the object after a certain time.
     /// </summary>
@@ -312,13 +323,13 @@ public class Animal : MonoBehaviour
 
     Gene GenerateOffspringGene(Gene partnerGene) {
         Gene offspringGene = new Gene();
-        float randomValue = 0.5f;
-        if(Random.Range(0,100) < 30) {
-            randomValue = Random.Range(0.2f,1.2f);
-        }
-        offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * randomValue;
-        offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * randomValue;
-        offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * randomValue;
+       
+        //if(Random.Range(0,100) < 30) {
+        //    randomValue = Random.Range(0.2f,1.2f);
+        //}
+        offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * 0.5f;
+        offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * 0.5f;
+        offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * 0.5f;
 
         return offspringGene;
     }
@@ -326,8 +337,21 @@ public class Animal : MonoBehaviour
     public void procreate(Animal t_partner, GameObject t_prefab) {
         Gene offspringGene = GenerateOffspringGene(t_partner._gene);
 
+  
+
         Animal offspringOne = instantiateOffspring(t_prefab);
         Animal offspringTwo = instantiateOffspring(t_prefab);
+
+        float randomValue = Random.Range(1.2f, 2f);
+
+        float speed = ((t_partner.getMaxSpeed() + m_maxSpeed) * 0.5f) * randomValue;
+        float perceptionRadius = ((t_partner.getPerceptionRadius() + m_perceptionRadius) * 0.5f) * randomValue;
+
+        offspringOne.setMaxSpeed(speed);
+        offspringOne.setPerceptionRadius(perceptionRadius);
+
+        offspringTwo.setMaxSpeed(speed);
+        offspringTwo.setPerceptionRadius(perceptionRadius);
 
         offspringOne._gene = offspringGene;
         offspringTwo._gene = offspringGene;

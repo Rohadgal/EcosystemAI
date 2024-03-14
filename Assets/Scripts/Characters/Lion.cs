@@ -22,6 +22,7 @@ public class Lion : MonoBehaviour
         _animal = GetComponent<Animal>();
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
+        _perceivedPartner = new List<GameObject>();
         _lionStates = lionStates.Wandering;
 
         setGenes();
@@ -41,28 +42,18 @@ public class Lion : MonoBehaviour
 
     void perceptionManager() {
         Collider[] perceivedObjects = Physics.OverlapSphere(_animal.getPos(), _animal.getPerceptionRadius());
-        if (isHungry) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
-                seekFood(perceivedObjects);
-                //decisionManager();
-                //return;
-            }
-        }
-        if (isThirsty) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
-                seekWater(perceivedObjects);
-                // decisionManager();
-                // return;
-            }
-        }
-        if (hasUrge) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
-                seekPartner(perceivedObjects);
-                // decisionManager();
-                // return;
-            }
-        }
 
+        if(perceivedObjects != null && perceivedObjects.Length > 0 ) {
+            if (isHungry) {
+                seekFood(perceivedObjects);
+            }
+            if (isThirsty) {
+                seekWater(perceivedObjects);
+            }
+            if (hasUrge) {
+                seekPartner(perceivedObjects);
+            }
+        }
         decisionManager();
     }
 
@@ -83,7 +74,6 @@ public class Lion : MonoBehaviour
                 }
             }
         }
-
     }
 
     void seekWater(Collider[] t_perceivedObjects) {
@@ -131,7 +121,8 @@ public class Lion : MonoBehaviour
             _animal.setTarget(foodTarget);
             _lionStates = lionStates.Seeking;
 
-            if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
+            if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 3f) {
+                Debug.LogWarning(Vector3.Distance(transform.position, foodTarget.transform.position));
                 _lionStates = lionStates.Eating;
 
                 actionManager();
@@ -144,7 +135,7 @@ public class Lion : MonoBehaviour
             _animal.setTarget(waterTarget);
             _lionStates = lionStates.Seeking;
 
-            if (Vector3.Distance(transform.position, waterTarget.transform.position) <= 2.5f) {
+            if (Vector3.Distance(transform.position, waterTarget.transform.position) <= 3f) {
                 _lionStates = lionStates.Drinking;
 
                 actionManager();
@@ -156,8 +147,7 @@ public class Lion : MonoBehaviour
             _animal.setTarget(partnerTarget);
             _lionStates = lionStates.Seeking;
 
-            if (Vector3.Distance(transform.position, partnerTarget.transform.position) <= 2f) {
-
+            if (Vector3.Distance(transform.position, partnerTarget.transform.position) <= 4f) {
                 _lionStates = lionStates.Reproducing;
                 actionManager();
                 return;
@@ -197,11 +187,12 @@ public class Lion : MonoBehaviour
             case lionStates.Drinking:
                 _animal.ChangeAnimalState(AnimalState.Eat);
                 drink(waterTarget);
-                // _perceivedWater.Clear();
                 break;
             case lionStates.Reproducing:
                 _animal.ChangeAnimalState(AnimalState.Reproduce);
-                reproduce(partnerTarget);
+                if(partnerTarget != null) {
+                    reproduce(partnerTarget);
+                }
                 break;
             default: break;
         }
@@ -227,16 +218,16 @@ public class Lion : MonoBehaviour
 
     void setGenes() {
         _animal.setGender(Random.Range(0, 150) < 75f);
-        Debug.Log(_animal.getIsFemale());
+       // Debug.Log(_animal.getIsFemale());
         _animal._gene.feelHungry = 20f;
         _animal._gene.feelThirst = 40f;
         _animal._gene.feelUrge = 60f;
     }
 
     void eat(GameObject _food) {
+     
         isHungry = false;
         _food.SetActive(false);
-        //_food.GetComponent<MeshRenderer>().enabled = false;
         _perceivedFood.Clear();
         closestFood = Mathf.Infinity;
         _animal.setHunger(0f);
@@ -256,10 +247,7 @@ public class Lion : MonoBehaviour
 
     void reproduce(GameObject t_partner) {
         if (_animal.getIsFemale()) {
-            Debug.Log("Reproduce");
             _animal.procreate(t_partner.GetComponent<Animal>(), lionPrefab);
-            //hasUrge = false;
-            //t_partner.GetComponent<Chicken>().setUrge(false);
         }
         isBusy = false;
         _perceivedPartner.Clear();

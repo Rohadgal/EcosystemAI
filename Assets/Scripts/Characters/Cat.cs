@@ -9,10 +9,10 @@ public class Cat : MonoBehaviour
 {
     Animal _animal;
     catStates _catStates;
-    public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner;
-    bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true;
-    GameObject foodTarget, waterTarget, partnerTarget;
-    float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity;
+    public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner, _perceivedThreats;
+    bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true, isInDanger;
+    GameObject foodTarget, waterTarget, partnerTarget, hunterTarget;
+    float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity, closestThreat = Mathf.Infinity;
     float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
     [SerializeField]
     GameObject catPrefab;
@@ -24,6 +24,8 @@ public class Cat : MonoBehaviour
         _animal = GetComponent<Animal>();
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
+        _perceivedPartner = new List<GameObject>();
+        _perceivedThreats = new List<GameObject>();
         _catStates = catStates.Wandering;
 
         setGenes();
@@ -43,35 +45,52 @@ public class Cat : MonoBehaviour
 
     void perceptionManager() {
         Collider[] perceivedObjects = Physics.OverlapSphere(_animal.getPos(), _animal.getPerceptionRadius());
-        if (isHungry) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
-                seekFood(perceivedObjects);
-                //decisionManager();
-                //return;
-            }
-        }
-        if (isThirsty) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
-                seekWater(perceivedObjects);
-                // decisionManager();
-                // return;
-            }
-        }
-        if (hasUrge) {
-            if (perceivedObjects != null && perceivedObjects.Length != 0) {
-                seekPartner(perceivedObjects);
-                // decisionManager();
-                // return;
-            }
-        }
 
+        if(perceivedObjects != null && perceivedObjects.Length > 0) {
+
+            perceivedPredator(perceivedObjects);
+
+            if (isHungry) {
+                seekFood(perceivedObjects);
+            }
+            if (isThirsty) {
+                seekWater(perceivedObjects);
+            }
+            if (hasUrge) {
+                seekPartner(perceivedObjects);
+             
+            }
+        }
         decisionManager();
     }
 
+    void perceivedPredator(Collider[] perceivedObjects) {
+        foreach(Collider col in perceivedObjects) {
+            if(col.gameObject.CompareTag("dog") || col.gameObject.CompareTag("lion")) {
+                _perceivedThreats.Add(col.gameObject); 
+                float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
+                if(dist < closestThreat) {
+                    closestThreat = dist;
+                    hunterTarget = col.gameObject;
+                    isInDanger = true;
+                }
+            }
+        }
+        bool isSafe = true;
+        foreach(GameObject predator in _perceivedThreats) {
+            if(Vector3.Distance(transform.position, predator.transform.position) < _animal.getPerceptionRadius()) {
+                isSafe = false;
+            }
+        }
+        if(isSafe) {
+            isInDanger = false;
+            closestThreat = Mathf.Infinity;
+            hunterTarget = null;
+        }
+    }
+
     void seekFood(Collider[] t_perceivedObjects) {
-
         if(t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
-
             foreach (Collider col in t_perceivedObjects) {
                 if (col.gameObject.CompareTag("chicken") && !_perceivedFood.Contains(col.gameObject)) {
                     _perceivedFood.Add(col.gameObject);
@@ -83,7 +102,6 @@ public class Cat : MonoBehaviour
                 }
             }
         }
-
     }
 
     void seekWater(Collider[] t_perceivedObjects) {
@@ -125,10 +143,15 @@ public class Cat : MonoBehaviour
     }
 
     void decisionManager() {
-        //if(t_perceivedObjects != null && _perceivedObjects.Count == 0) { return; }
 
-        //if(_animal.getHunger() > _animal.getThirst()) { 
-        //}
+        if(isInDanger) {
+            if(hunterTarget != null) {
+                _animal.setTarget(hunterTarget);
+            }
+            _catStates = catStates.Evading;
+            movementManager();
+            return;
+        }
 
         if (isHungry && foodTarget != null /*&& !hasUrge*/) {
 
@@ -188,6 +211,9 @@ public class Cat : MonoBehaviour
             case catStates.Seeking:
                 _animal.ChangeAnimalState(AnimalState.Seek);
                 break;
+            case catStates.Evading:
+                _animal.ChangeAnimalState(AnimalState.Evade);
+                break;
             default: break;
         }
     }
@@ -231,7 +257,7 @@ public class Cat : MonoBehaviour
 
     void setGenes() {
         _animal.setGender(Random.Range(0, 150) < 75f);
-        Debug.Log(_animal.getIsFemale());
+      //  Debug.Log(_animal.getIsFemale());
         _animal._gene.feelHungry = 20f;
         _animal._gene.feelThirst = 40f;
         _animal._gene.feelUrge = 60f;

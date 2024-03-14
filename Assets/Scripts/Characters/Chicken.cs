@@ -155,11 +155,11 @@ public class Chicken : MonoBehaviour
         //}
 
         if(isInDanger) {
-            movementManager();
             if(hunterTarget != null) {
                 _animal.setTarget(hunterTarget);
             }
             _chickenStates = chickenStates.Evading;
+            movementManager();
             return;
         }
 
@@ -269,7 +269,7 @@ public class Chicken : MonoBehaviour
 
     void setGenes() {
         _animal.setGender(Random.Range(0, 150) < 75f);
-        Debug.Log(_animal.getIsFemale());
+        //Debug.Log(_animal.getIsFemale());
         _animal._gene.feelHungry = Random.Range(20f, 40f);
         _animal._gene.feelThirst = Random.Range(30f, 50f);
         _animal._gene.feelUrge = Random.Range(20,60f);
