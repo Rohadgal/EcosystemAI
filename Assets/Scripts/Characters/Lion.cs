@@ -15,6 +15,7 @@ public class Lion : MonoBehaviour
     float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
     [SerializeField]
     GameObject lionPrefab;
+    bool doCoroutine = true;
 
     // Start is called before the first frame update
     void Start()
@@ -30,14 +31,22 @@ public class Lion : MonoBehaviour
         survivalSystem();
     }
 
-    private void FixedUpdate() {
+    IEnumerator perceive() {
+        doCoroutine = false;
+        yield return new WaitForSeconds(1f);
         perceptionManager();
+        survivalSystem();
+        doCoroutine = true;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        survivalSystem();
+    void Update() {
+        // survivalSystem();
+        if (doCoroutine) {
+
+            StartCoroutine(perceive());
+        
+        }
     }
 
     void perceptionManager() {
@@ -47,10 +56,10 @@ public class Lion : MonoBehaviour
             if (isHungry) {
                 seekFood(perceivedObjects);
             }
-            if (isThirsty) {
+            else if (isThirsty) {
                 seekWater(perceivedObjects);
             }
-            if (hasUrge) {
+            else if (hasUrge) {
                 seekPartner(perceivedObjects);
             }
         }
@@ -70,6 +79,7 @@ public class Lion : MonoBehaviour
                     if (dist < closestFood) {
                         closestFood = dist;
                         foodTarget = col.gameObject;
+                        return;
                     }
                 }
             }
@@ -107,7 +117,7 @@ public class Lion : MonoBehaviour
                         closestPartner = dist;
                         partnerTarget = col.gameObject;
                         isBusy = true;
-                        // return;
+                        return;
                     }
                 }
             }
@@ -130,7 +140,7 @@ public class Lion : MonoBehaviour
             }
         }
 
-        if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
+        else if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
 
             _animal.setTarget(waterTarget);
             _lionStates = lionStates.Seeking;
@@ -143,7 +153,7 @@ public class Lion : MonoBehaviour
             }
         }
 
-        if (hasUrge && partnerTarget != null) {
+        else if (hasUrge && partnerTarget != null) {
             _animal.setTarget(partnerTarget);
             _lionStates = lionStates.Seeking;
 

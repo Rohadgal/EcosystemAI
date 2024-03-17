@@ -13,12 +13,13 @@ public class Chicken : MonoBehaviour
     Animal _animal;
     chickenStates _chickenStates;
     public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner, _perceivedThreats;
-    bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true, isInDanger = false;
+    bool isHungry = false, isThirsty = false, hasUrge = false,/*isBusy = false,*/ isSatisfied = true, isInDanger = false;
     GameObject foodTarget, waterTarget, partnerTarget, hunterTarget;
     float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity, closestThreat = Mathf.Infinity;
-    float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
+    float hungerIncrement = 0.25f, thirstIncrement = 0.3f, urgeIncrement = 0.6f;
     [SerializeField]
     GameObject chickenPrefab;
+    bool doCoroutine = true;
     
     // Start is called before the first frame update
     void Start()
@@ -29,21 +30,29 @@ public class Chicken : MonoBehaviour
         _perceivedPartner = new List<GameObject>();
         _perceivedThreats = new List<GameObject>();
         _chickenStates = chickenStates.Wandering;
-        //_animal.setThirst(0f);
-        //_animal.setHunger(0f);
-        
-        setGenes();
+
+        if (!_animal.isChild) {
+
+          setGenes();
+        }
 
         survivalSystem();  
     }
-
-    private void FixedUpdate() {
+    IEnumerator perceive() {
+        doCoroutine = false;
+        yield return new WaitForSeconds(.5f);
         perceptionManager();
+        survivalSystem();
+        doCoroutine = true;
     }
 
-    private void Update() {
-       survivalSystem();
-        
+    // Update is called once per frame
+    void Update() {
+        // survivalSystem();
+        if (doCoroutine) {
+
+            StartCoroutine(perceive());
+        }
     }
 
     void perceptionManager() {
@@ -51,30 +60,31 @@ public class Chicken : MonoBehaviour
 
         if(perceivedObjects != null && perceivedObjects.Length > 0) {
             perceivePredator(perceivedObjects);
-        }
 
-        if (isHungry) {
-            if (perceivedObjects != null && perceivedObjects.Length > 0) {
+            if (isHungry) {
+
                 seekFood(perceivedObjects);
                 //decisionManager();
                 //return;
-            }
-        }
-        if (isThirsty) {
-            if(perceivedObjects != null && perceivedObjects.Length > 0) {
+
+            } else if (isThirsty) {
+
                 seekWater(perceivedObjects);
-            }
-        }
-        if (hasUrge) {
-            if (perceivedObjects != null && perceivedObjects.Length > 0) {
+
+            } else if (hasUrge) {
+
                 seekPartner(perceivedObjects);
+
             }
         }
+
+       
 
         decisionManager();
     }
 
     void perceivePredator(Collider[] perceivedObjects) {
+        //closestThreat = Mathf.Infinity;
         foreach(Collider col in perceivedObjects) {
             if(col.gameObject.CompareTag("cat") || col.gameObject.CompareTag("dog") || col.gameObject.CompareTag("lion")) {
                 _perceivedThreats.Add(col.gameObject);
@@ -83,6 +93,7 @@ public class Chicken : MonoBehaviour
                     closestThreat = dist;
                     hunterTarget = col.gameObject;
                     isInDanger = true;
+                    return;
                 }
             }
         }
@@ -94,12 +105,15 @@ public class Chicken : MonoBehaviour
         }
         if( isSafe) {
             isInDanger = false;
+            _perceivedThreats.Clear();
             closestThreat = Mathf.Infinity;
             hunterTarget = null;
+            _animal.setTarget(null);
         }
     }
 
     void seekFood(Collider[] t_perceivedObjects) {
+       // closestFood = Mathf.Infinity;
         foreach (Collider col in t_perceivedObjects) {
             if (col.gameObject.CompareTag("grass") && col.gameObject.GetComponent<CapsuleCollider>().enabled && !_perceivedFood.Contains(col.gameObject)) {
                 _perceivedFood.Add(col.gameObject);
@@ -107,12 +121,14 @@ public class Chicken : MonoBehaviour
                 if (dist < closestFood && col.gameObject.GetComponent<CapsuleCollider>().enabled) {
                     closestFood = dist;
                     foodTarget = col.gameObject;
+                    return;
                 }
             }
         }
     }
 
     void seekWater(Collider[] t_perceivedObjects) {
+       // closestWater = Mathf.Infinity;
         if(t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
            // closestWater = Mathf.Infinity;
             foreach(Collider col in t_perceivedObjects) {
@@ -132,18 +148,19 @@ public class Chicken : MonoBehaviour
     }
 
     void seekPartner(Collider[] t_perceivedObjects) {
+       // closestPartner = Mathf.Infinity;
         if(t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
             foreach(Collider col in t_perceivedObjects) {
                 if(col.gameObject.CompareTag("chicken") && col.gameObject.GetComponent<Animal>().getIsFemale() != _animal.getIsFemale() 
-                    && !col.gameObject.GetComponent<Chicken>().getIsBusy() && col.gameObject.GetComponent<Chicken>().hasUrge
+                    && /*!col.gameObject.GetComponent<Chicken>().getIsBusy() &&*/ col.gameObject.GetComponent<Chicken>().hasUrge
                     && !_perceivedPartner.Contains(col.gameObject)) {
                     _perceivedPartner.Add(col.gameObject);
                     float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
                     if(dist < closestPartner) {
                         closestPartner = dist;
                         partnerTarget = col.gameObject;
-                        isBusy = true;
-                       // return;
+                      //  isBusy = true;
+                        return;
                     }
                 }
             }
@@ -155,31 +172,34 @@ public class Chicken : MonoBehaviour
         //if(_animal.getHunger() > _animal.getThirst()) { 
         //}
 
-        if(isInDanger) {
-            if(hunterTarget != null) {
-                _animal.setTarget(hunterTarget);
-            }
+        if(isInDanger && hunterTarget != null) {
+            
+            _animal.setTarget(hunterTarget);
+            
             _chickenStates = chickenStates.Evading;
             movementManager();
             return;
         }
 
-        if (isHungry && foodTarget != null /*&& !hasUrge*/) {
-             if (!foodTarget.GetComponent<CapsuleCollider>().enabled) {
-                 closestFood = Mathf.Infinity;
-                 return;
-             }
+        else if (isHungry && foodTarget != null) {
+             //if (!foodTarget.GetComponent<CapsuleCollider>().enabled) {
+             //    closestFood = Mathf.Infinity;
+             //    return;
+             //}
              _animal.setTarget(foodTarget);
              _chickenStates = chickenStates.Seeking;
+           
              if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
                  _chickenStates = chickenStates.Eating;
                  
                  actionManager();
                  return;
              }
+            movementManager();
+            return;
         }
 
-        if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
+        else if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
             
             _animal.setTarget(waterTarget);
             _chickenStates = chickenStates.Seeking;
@@ -192,7 +212,7 @@ public class Chicken : MonoBehaviour
             }
         }
 
-        if(hasUrge && partnerTarget != null) {
+       else if(hasUrge && partnerTarget != null) {
             _animal.setTarget(partnerTarget);
             _chickenStates = chickenStates.Seeking;
 
@@ -202,13 +222,13 @@ public class Chicken : MonoBehaviour
                 actionManager();
                 return;
             }
-        }
+       }
 
         if(isSatisfied) {
             _chickenStates = chickenStates.Wandering;
         }
         movementManager();
-        actionManager();
+        //actionManager();
     }
 
     void movementManager() {
@@ -265,6 +285,7 @@ public class Chicken : MonoBehaviour
         }
         if (_animal.getUrge() > _animal._gene.feelUrge) {
             hasUrge = true;
+          //  isSatisfied = false;
         }
     }
 
@@ -274,6 +295,8 @@ public class Chicken : MonoBehaviour
         _animal._gene.feelHungry = Random.Range(20f, 40f);
         _animal._gene.feelThirst = Random.Range(30f, 50f);
         _animal._gene.feelUrge = Random.Range(20,60f);
+
+        Debug.Log("chicken hunger: " + _animal._gene.feelHungry);
     }
 
     void eat(GameObject _food) {
@@ -282,10 +305,10 @@ public class Chicken : MonoBehaviour
         _food.GetComponent<MeshRenderer>().enabled = false;
         _perceivedFood.Clear();
         closestFood = Mathf.Infinity;
-       // foodTarget = null;
+        foodTarget = null;
         //if (!isThirsty) {
-        //    _animal.setTarget(null);
         //}
+         _animal.setTarget(null);
         _animal.setHunger(0f);
         isSatisfied = true;
     }
@@ -294,10 +317,10 @@ public class Chicken : MonoBehaviour
         isThirsty = false;
         _perceivedWater.Clear();
         closestWater = Mathf.Infinity;
-        //waterTarget = null;
-        if (!isHungry) {
-            _animal.setTarget(null);
-        }
+        waterTarget = null;
+        
+         _animal.setTarget(null);
+        
         _animal.setThirst(0f);
         isSatisfied=true;
     }
@@ -309,15 +332,16 @@ public class Chicken : MonoBehaviour
             //hasUrge = false;
             //t_partner.GetComponent<Chicken>().setUrge(false);
         }
-        isBusy = false;
+       // isBusy = false;
         _perceivedPartner.Clear();
         partnerTarget = null;
+        _animal.setTarget(null);
         _animal.setUrge(0f);
         hasUrge = false;
 
     }
 
-    public bool getIsBusy() { return isBusy; }
+   // public bool getIsBusy() { return isBusy; }
     
     public void setUrge(bool t_hasUrge) {
         hasUrge =t_hasUrge;

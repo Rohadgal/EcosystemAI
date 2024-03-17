@@ -16,6 +16,7 @@ public class Dog : MonoBehaviour {
     float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
     [SerializeField]
     GameObject dogPrefab;
+    bool doCoroutine = true;
 
     // Start is called before the first frame update
     void Start() {
@@ -31,14 +32,21 @@ public class Dog : MonoBehaviour {
         survivalSystem();
     }
 
-    private void FixedUpdate() {
+    IEnumerator perceive() {
+        doCoroutine = false;
+        yield return new WaitForSeconds(1f);
         perceptionManager();
+        survivalSystem();
+        doCoroutine = true;
     }
-
 
     // Update is called once per frame
     void Update() {
-        survivalSystem();
+        // survivalSystem();
+        if (doCoroutine) {
+
+            StartCoroutine(perceive());
+        }
     }
 
     void perceptionManager() {
@@ -51,10 +59,10 @@ public class Dog : MonoBehaviour {
             if (isHungry) {
                 seekFood(perceivedObjects);
             }
-            if (isThirsty) {
+            else if (isThirsty) {
                 seekWater(perceivedObjects);
             }
-            if (hasUrge) {
+            else if (hasUrge) {
                 seekPartner(perceivedObjects);
             }
         }
@@ -81,6 +89,7 @@ public class Dog : MonoBehaviour {
         }
         if(isSafe) {
             isInDanger = false;
+            _perceivedThreats.Clear();
             closestThreat = Mathf.Infinity;
             hunterTarget = null;
         }
@@ -98,6 +107,7 @@ public class Dog : MonoBehaviour {
                     if (dist < closestFood) {
                         closestFood = dist;
                         foodTarget = col.gameObject;
+                        return;
                     }
                 }
             }
@@ -135,6 +145,7 @@ public class Dog : MonoBehaviour {
                         closestPartner = dist;
                         partnerTarget = col.gameObject;
                         isBusy = true;
+                        return;
                         // return;
                     }
                 }
@@ -153,7 +164,7 @@ public class Dog : MonoBehaviour {
             return;
         }
 
-        if (isHungry && foodTarget != null) {
+        else if (isHungry && foodTarget != null) {
 
             _animal.setTarget(foodTarget);
             _dogStates = dogStates.Seeking;
@@ -166,7 +177,7 @@ public class Dog : MonoBehaviour {
             }
         }
 
-        if (isThirsty && waterTarget != null) {
+        else if (isThirsty && waterTarget != null) {
 
             _animal.setTarget(waterTarget);
             _dogStates = dogStates.Seeking;
@@ -179,7 +190,7 @@ public class Dog : MonoBehaviour {
             }
         }
 
-        if (hasUrge && partnerTarget != null) {
+        else if (hasUrge && partnerTarget != null) {
             _animal.setTarget(partnerTarget);
             _dogStates = dogStates.Seeking;
 

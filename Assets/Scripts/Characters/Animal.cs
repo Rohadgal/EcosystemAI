@@ -40,6 +40,7 @@ public class Animal : MonoBehaviour
     float _hunger, _thirst, _urge, _maxLevel = 100f;
     public Rigidbody rb;
     public Gene _gene;
+    public bool isChild { get; set; } = false;
     #endregion
 
     public struct Gene {
@@ -95,6 +96,10 @@ public class Animal : MonoBehaviour
 
         if(m_needsCanvasGameObject != null) {
             m_needsCanvasGameObject.transform.rotation = Quaternion.LookRotation(m_needsCanvasGameObject.transform.position - m_camera.transform.position);
+        }
+
+        if(_hunger >= 100 || _thirst >= 100) {
+            gameObject.SetActive(false);
         }
     }
 
@@ -323,14 +328,22 @@ public class Animal : MonoBehaviour
 
     Gene GenerateOffspringGene(Gene partnerGene) {
         Gene offspringGene = new Gene();
-       
-        //if(Random.Range(0,100) < 30) {
-        //    randomValue = Random.Range(0.2f,1.2f);
-        //}
-        offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * 0.5f;
-        offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * 0.5f;
-        offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * 0.5f;
 
+        float randomValueHunger = 0.5f;
+        float randomValueThirst = 0.5f;
+        float randomValueUrge = 0.5f;
+        if(Random.Range(0,100) < 25) {
+            randomValueHunger = Random.Range(0.4f,2.0f);
+            randomValueThirst = Random.Range(0.4f, 2.0f);
+            randomValueUrge = Random.Range(0.4f, 2.0f);
+        }
+        offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * randomValueHunger;
+        offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * randomValueThirst;
+        offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * randomValueUrge;
+
+        Debug.Log("f hungry: " + offspringGene.feelHungry);
+        Debug.Log("f thirsty: " + offspringGene.feelThirst);
+        Debug.Log("f Urge: " + offspringGene.feelUrge);
         return offspringGene;
     }
 
@@ -360,6 +373,10 @@ public class Animal : MonoBehaviour
 
         offspringOne._gene = offspringGene;
         offspringTwo._gene = offspringGene;
+
+        offspringOne.isChild = true;
+        offspringTwo.isChild = true;
+
     }
 
     public Animal instantiateOffspring(GameObject t_animalTypePrefab) {

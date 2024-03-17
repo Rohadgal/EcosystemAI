@@ -13,10 +13,10 @@ public class Cat : MonoBehaviour
     bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true, isInDanger;
     GameObject foodTarget, waterTarget, partnerTarget, hunterTarget;
     float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity, closestThreat = Mathf.Infinity;
-    float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
+    float hungerIncrement = 0.7f, thirstIncrement = 0.7f, urgeIncrement = 0.24f;
     [SerializeField]
     GameObject catPrefab;
-
+    bool doCoroutine = true;
 
     // Start is called before the first frame update
     void Start()
@@ -33,14 +33,26 @@ public class Cat : MonoBehaviour
         survivalSystem();
     }
 
-    private void FixedUpdate() {
+    //private void FixedUpdate() {
+    //    perceptionManager();
+    //}
+
+    IEnumerator perceive() {
+        doCoroutine = false;
+        yield return new WaitForSeconds(.5f);
         perceptionManager();
+        survivalSystem();
+        doCoroutine = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        survivalSystem();
+        // survivalSystem();
+        if (doCoroutine) {
+
+            StartCoroutine(perceive());
+        }
     }
 
     void perceptionManager() {
@@ -53,10 +65,10 @@ public class Cat : MonoBehaviour
             if (isHungry) {
                 seekFood(perceivedObjects);
             }
-            if (isThirsty) {
+            else if (isThirsty) {
                 seekWater(perceivedObjects);
             }
-            if (hasUrge) {
+            else if (hasUrge) {
                 seekPartner(perceivedObjects);
              
             }
@@ -73,6 +85,7 @@ public class Cat : MonoBehaviour
                     closestThreat = dist;
                     hunterTarget = col.gameObject;
                     isInDanger = true;
+                    return;
                 }
             }
         }
@@ -84,6 +97,7 @@ public class Cat : MonoBehaviour
         }
         if(isSafe) {
             isInDanger = false;
+            _perceivedThreats.Clear();
             closestThreat = Mathf.Infinity;
             hunterTarget = null;
         }
@@ -98,6 +112,7 @@ public class Cat : MonoBehaviour
                     if (dist < closestFood) {
                         closestFood = dist;
                         foodTarget = col.gameObject;
+                        return;
                     }
                 }
             }
@@ -153,7 +168,7 @@ public class Cat : MonoBehaviour
             return;
         }
 
-        if (isHungry && foodTarget != null /*&& !hasUrge*/) {
+        else if (isHungry && foodTarget != null /*&& !hasUrge*/) {
 
             _animal.setTarget(foodTarget);
             _catStates = catStates.Seeking;
@@ -166,7 +181,7 @@ public class Cat : MonoBehaviour
             }
         }
 
-        if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
+        else if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
 
             _animal.setTarget(waterTarget);
             _catStates = catStates.Seeking;
@@ -179,7 +194,7 @@ public class Cat : MonoBehaviour
             }
         }
 
-        if (hasUrge && partnerTarget != null) {
+        else if (hasUrge && partnerTarget != null) {
             _animal.setTarget(partnerTarget);
             _catStates = catStates.Seeking;
 
