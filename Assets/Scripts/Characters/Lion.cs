@@ -71,9 +71,9 @@ public class Lion : MonoBehaviour
         if (t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
 
             foreach (Collider col in t_perceivedObjects) {
-                if (col.gameObject.CompareTag("chicken") && !_perceivedFood.Contains(col.gameObject)
+                if (/*col.gameObject.CompareTag("chicken") && !_perceivedFood.Contains(col.gameObject)
                     || col.gameObject.CompareTag("cat") && !_perceivedFood.Contains(col.gameObject)
-                    || col.gameObject.CompareTag("dog") && !_perceivedFood.Contains(col.gameObject)) {
+                    || */col.gameObject.CompareTag("dog") && !_perceivedFood.Contains(col.gameObject)) {
                     _perceivedFood.Add(col.gameObject);
                     float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
                     if (dist < closestFood) {

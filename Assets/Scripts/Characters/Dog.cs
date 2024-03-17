@@ -56,15 +56,19 @@ public class Dog : MonoBehaviour {
 
             perceivedPredator(perceivedObjects);
 
-            if (isHungry) {
-                seekFood(perceivedObjects);
+            if (!isInDanger) {
+
+                if (isHungry) {
+                    seekFood(perceivedObjects);
+                }
+                else if (isThirsty) {
+                    seekWater(perceivedObjects);
+                }
+                else if (hasUrge) {
+                    seekPartner(perceivedObjects);
+                }
             }
-            else if (isThirsty) {
-                seekWater(perceivedObjects);
-            }
-            else if (hasUrge) {
-                seekPartner(perceivedObjects);
-            }
+
         }
         decisionManager();
     }
@@ -100,8 +104,8 @@ public class Dog : MonoBehaviour {
         if (t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
 
             foreach (Collider col in t_perceivedObjects) {
-                if (col.gameObject.CompareTag("chicken") && !_perceivedFood.Contains(col.gameObject)
-                    || col.gameObject.CompareTag("cat") && !_perceivedFood.Contains(col.gameObject)) {
+                if (/*col.gameObject.CompareTag("chicken") && !_perceivedFood.Contains(col.gameObject)
+                    || */col.gameObject.CompareTag("cat") && !_perceivedFood.Contains(col.gameObject)) {
                     _perceivedFood.Add(col.gameObject);
                     float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
                     if (dist < closestFood) {

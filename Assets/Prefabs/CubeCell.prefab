@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 7409405355514626665}
   - component: {fileID: 8220509045968456800}
   - component: {fileID: 5951498948986314119}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Tree_03_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -335,7 +335,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.08
+  m_Radius: 0.29
   m_Height: 4.9843674
   m_Direction: 1
   m_Center: {x: 0, y: 2.55, z: -0.07}

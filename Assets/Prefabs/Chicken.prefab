@@ -162,6 +162,10 @@ MonoBehaviour:
   _perceivedPartner: []
   _perceivedThreats: []
   chickenPrefab: {fileID: 1585003939944451785}
+  raycastDistance: 1
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 16
 --- !u!114 &8171149840131086030
 MonoBehaviour:
   m_ObjectHideFlags: 0

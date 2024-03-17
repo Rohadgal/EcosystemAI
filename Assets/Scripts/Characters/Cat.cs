@@ -62,15 +62,15 @@ public class Cat : MonoBehaviour
 
             perceivedPredator(perceivedObjects);
 
-            if (isHungry) {
-                seekFood(perceivedObjects);
-            }
-            else if (isThirsty) {
-                seekWater(perceivedObjects);
-            }
-            else if (hasUrge) {
-                seekPartner(perceivedObjects);
-             
+            if (!isInDanger) {
+
+                if (isHungry) {
+                    seekFood(perceivedObjects);
+                } else if (isThirsty) {
+                    seekWater(perceivedObjects);
+                } else if (hasUrge) {
+                    seekPartner(perceivedObjects);
+                }
             }
         }
         decisionManager();
@@ -78,7 +78,7 @@ public class Cat : MonoBehaviour
 
     void perceivedPredator(Collider[] perceivedObjects) {
         foreach(Collider col in perceivedObjects) {
-            if(col.gameObject.CompareTag("dog") || col.gameObject.CompareTag("lion")) {
+            if(col.gameObject.CompareTag("dog") /*|| col.gameObject.CompareTag("lion")*/) {
                 _perceivedThreats.Add(col.gameObject); 
                 float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
                 if(dist < closestThreat) {

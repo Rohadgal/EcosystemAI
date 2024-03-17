@@ -12,7 +12,7 @@ public class CubeCell : MonoBehaviour
     [SerializeField]
     GameObject tree, grass;
     public string waterTag = "water";
-
+    int waterLayerIndex = 4;
 
     private void Awake() {
         if (_meshRenderer == null) {
@@ -53,10 +53,8 @@ public class CubeCell : MonoBehaviour
                     Color brownColor = new Vector4(1f, .5f, .5f, 1f);
                     _meshRenderer.material.color = brownColor;
                     (tree.GetComponent<MeshRenderer>().enabled ? tree : grass).GetComponent<MeshRenderer>().enabled = false;
-                    //if (tree.GetComponent<CapsuleCollider>().enabled) {
-                    //    tree.GetComponent<CapsuleCollider>().enabled = false;
-                    //}
                     (tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
+                    gameObject.layer = 0;
                     break;
                 case CellType.Grass:
                     this.tag = "Untagged";
@@ -67,9 +65,14 @@ public class CubeCell : MonoBehaviour
                     if (hasVegetation) {
                         bool isTree = UnityEngine.Random.Range(0f, 1f) < .02f;
                         (isTree ? tree : grass).GetComponent<MeshRenderer>().enabled = true;
-                        //if (isTree) { tree.GetComponent<CapsuleCollider>().enabled = true; }
                         (isTree ? tree : grass).GetComponent<CapsuleCollider>().enabled = true;
+                        if(isTree){
+                            gameObject.layer = 4;
+                        } else {
+                            gameObject.layer = 0;
+                        }
                     }
+                    gameObject.layer = 0;
                     break;
                 case CellType.Water:
                     Color blueColor = new Vector4(.4f, .6f, .9f, 1f);
@@ -78,6 +81,7 @@ public class CubeCell : MonoBehaviour
                     this.GetComponent<BoxCollider>().enabled = true;
                     (tree.GetComponent<CapsuleCollider>().enabled ? tree : grass).GetComponent<CapsuleCollider>().enabled = false;
                     this.tag = waterTag;
+                    gameObject.layer = waterLayerIndex;
                     break;
                 default: Debug.Log("Incorrect cellType"); break;
             }

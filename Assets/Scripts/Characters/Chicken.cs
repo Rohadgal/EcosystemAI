@@ -12,15 +12,25 @@ public class Chicken : MonoBehaviour
 {
     Animal _animal;
     chickenStates _chickenStates;
+
     public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner, _perceivedThreats;
+
     bool isHungry = false, isThirsty = false, hasUrge = false,/*isBusy = false,*/ isSatisfied = true, isInDanger = false;
+
     GameObject foodTarget, waterTarget, partnerTarget, hunterTarget;
+
     float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity, closestThreat = Mathf.Infinity;
+
     float hungerIncrement = 0.25f, thirstIncrement = 0.3f, urgeIncrement = 0.6f;
+
     [SerializeField]
     GameObject chickenPrefab;
+   
     bool doCoroutine = true;
-    
+
+    public float raycastDistance = 1f;
+    public LayerMask obstacleLayer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +53,17 @@ public class Chicken : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         perceptionManager();
         survivalSystem();
+        RaycastHit hit;
+        if(Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, obstacleLayer)) {
+            if(hit.collider.gameObject != waterTarget || isHungry || hasUrge) {
+                avoidObstacle(hit);
+            }
+        }
         doCoroutine = true;
+    }
+
+    void avoidObstacle(RaycastHit hit) {
+        transform.Rotate(Vector3.up * 90f);
     }
 
     // Update is called once per frame
@@ -53,6 +73,7 @@ public class Chicken : MonoBehaviour
 
             StartCoroutine(perceive());
         }
+
     }
 
     void perceptionManager() {
@@ -61,20 +82,15 @@ public class Chicken : MonoBehaviour
         if(perceivedObjects != null && perceivedObjects.Length > 0) {
             perceivePredator(perceivedObjects);
 
-            if (isHungry) {
+            if (!isInDanger) {
 
-                seekFood(perceivedObjects);
-                //decisionManager();
-                //return;
-
-            } else if (isThirsty) {
-
-                seekWater(perceivedObjects);
-
-            } else if (hasUrge) {
-
-                seekPartner(perceivedObjects);
-
+                if (isHungry && !foodTarget) { 
+                    seekFood(perceivedObjects);
+                } else if (isThirsty && !waterTarget) {
+                    seekWater(perceivedObjects);
+                } else if (hasUrge && !partnerTarget) {
+                    seekPartner(perceivedObjects);
+                }
             }
         }
 
@@ -86,7 +102,7 @@ public class Chicken : MonoBehaviour
     void perceivePredator(Collider[] perceivedObjects) {
         //closestThreat = Mathf.Infinity;
         foreach(Collider col in perceivedObjects) {
-            if(col.gameObject.CompareTag("cat") || col.gameObject.CompareTag("dog") || col.gameObject.CompareTag("lion")) {
+            if(col.gameObject.CompareTag("cat") /*|| col.gameObject.CompareTag("dog") || col.gameObject.CompareTag("lion")*/) {
                 _perceivedThreats.Add(col.gameObject);
                 float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
                 if (dist < closestThreat) {
@@ -117,12 +133,12 @@ public class Chicken : MonoBehaviour
         foreach (Collider col in t_perceivedObjects) {
             if (col.gameObject.CompareTag("grass") && col.gameObject.GetComponent<CapsuleCollider>().enabled && !_perceivedFood.Contains(col.gameObject)) {
                 _perceivedFood.Add(col.gameObject);
-                float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
-                if (dist < closestFood && col.gameObject.GetComponent<CapsuleCollider>().enabled) {
-                    closestFood = dist;
+               // float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
+                //if (dist < closestFood && col.gameObject.GetComponent<CapsuleCollider>().enabled) {
+                  //  closestFood = dist;
                     foodTarget = col.gameObject;
                     return;
-                }
+                //}
             }
         }
     }
@@ -210,6 +226,8 @@ public class Chicken : MonoBehaviour
                 actionManager();
                 return;
             }
+            movementManager();
+            return;
         }
 
        else if(hasUrge && partnerTarget != null) {
@@ -222,7 +240,9 @@ public class Chicken : MonoBehaviour
                 actionManager();
                 return;
             }
-       }
+            movementManager();
+            return;
+        }
 
         if(isSatisfied) {
             _chickenStates = chickenStates.Wandering;
@@ -285,7 +305,7 @@ public class Chicken : MonoBehaviour
         }
         if (_animal.getUrge() > _animal._gene.feelUrge) {
             hasUrge = true;
-          //  isSatisfied = false;
+           //isSatisfied = false;
         }
     }
 
@@ -332,12 +352,13 @@ public class Chicken : MonoBehaviour
             //hasUrge = false;
             //t_partner.GetComponent<Chicken>().setUrge(false);
         }
-       // isBusy = false;
+       //isBusy = false;
         _perceivedPartner.Clear();
         partnerTarget = null;
         _animal.setTarget(null);
         _animal.setUrge(0f);
         hasUrge = false;
+       // isSatisfied = true;
 
     }
 

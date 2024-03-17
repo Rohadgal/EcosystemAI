@@ -105,7 +105,10 @@ public class Animal : MonoBehaviour
 
     #region Steering Behaviours
     void seek() {
-        SteeringBehaviours.seek(this, new Vector3(m_target.gameObject.transform.position.x, this.transform.position.y, m_target.gameObject.transform.position.z));
+        if(m_target != null) {
+
+            SteeringBehaviours.seek(this, new Vector3(m_target.gameObject.transform.position.x, this.transform.position.y, m_target.gameObject.transform.position.z));
+        }
     }
     /// <summary>
     /// Steering behavior for the "Fleeing" state.
@@ -123,7 +126,10 @@ public class Animal : MonoBehaviour
     /// Steering behavior for the "Evading" state.
     /// </summary>
     void evade() {
-        SteeringBehaviours.evade(this, m_target.GetComponent<Animal>());
+        if(m_target != null) {
+
+            SteeringBehaviours.evade(this, m_target.GetComponent<Animal>());
+        }
     }
     /// <summary>
     /// Steering behavior for the "Wandering" state.
