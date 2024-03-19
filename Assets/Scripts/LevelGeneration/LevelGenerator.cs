@@ -10,29 +10,23 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     GameObject gridElement;
 
-    int gridWidth = 120;
-    int gridDepth = 120;
-    public int iterations = 1;
+    public int gridWidth { get; set; } = 68;
+    public int gridDepth { get; set; } = 68;
+    public int iterations = 5;
 
-    public int numGrass = 3;
-    public int numGround = 4;
-    public int numWater = 8;
+    public int numGrass = 5;
+    //public int numGround = 4;
+    public int numWater = 3;
 
-    float prefabWidth;
-    float prefabDepth;
+    //float prefabWidth;
+    //float prefabDepth;
 
     bool canGenerateCell;
 
-    bool m_isStepped = true;
-
     GameObject[,] cellsArray = new GameObject[0, 0];
 
-    //GameObject[,] cellsArrayOne = new GameObject[0, 0];
     CellType[,] cellsArrayMap = new CellType[0, 0];
 
-    //private void Awake() {
-    //    UpdatePosition();
-    //}
 
     private void Start() {
         // Check if cell has been defined and check and assign it's dimension
@@ -44,13 +38,6 @@ public class LevelGenerator : MonoBehaviour
         }
         Debug.Log("Missing cell prefab");
     }
-
-    //void Update() {
-    //    // Check if the screen size has changed and update the position
-    //    if (Screen.width != transform.position.x || Screen.height != transform.position.y) {
-    //        UpdatePosition();
-    //    }
-    //}
 
     public void generateGrid() {
         
@@ -79,35 +66,11 @@ public class LevelGenerator : MonoBehaviour
         StartCoroutine(createGrid());
     }
 
-    // Assign grid width
-    public void getWidthInput(string input) {
-        gridWidth = Convert.ToInt32(input);
-    }
-    // Assign grid height
-    public void getHeightInput(string input) {
-        gridDepth = Convert.ToInt32(input);
-    }
-    //// Assign number of similar cells for alive ones to continue living
-    //public void getAliveNum(string input) {
-    //    numAlive = Convert.ToInt32(input);
-    //}
-    //// Assign number of similar cells for dead ones to continue dead
-    //public void getDeadNum(string input) {
-    //    numDead = Convert.ToInt32(input);
-    //}
 
     public void getIterations(string input) {
         iterations = Convert.ToInt32(input);
     }
 
-    public void isStepped(bool input) {
-        m_isStepped = input;
-    }
-
-    // Set the position to the top-left corner of the screen
-    //void UpdatePosition() {
-    //    //topLeftCorner = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height*0.25f, 0));
-    //}
 
     IEnumerator createGrid() {
         
@@ -115,10 +78,6 @@ public class LevelGenerator : MonoBehaviour
             for (int j = 0; j < gridDepth; j++) {
                 if (canGenerateCell) {
                     setRandomCubes(i, j);
-                    // Create a little pause before drawing each individual cell on the matrix
-                    //if (m_isStepped) {
-                    //    yield return new WaitForSeconds(0.02f);
-                    //}
                 }
             }
         }
@@ -132,29 +91,16 @@ public class LevelGenerator : MonoBehaviour
                     // Check if the cell matrix is empty before creating a new one
                     if (canGenerateCell) {
                         //check neighbors
-
                         int numOfNeighbors = checkNeighbors(i, j);
-
                         switch (cellsArrayMap[i, j]) {
                             case CellType.Grass:
-                                
                                 cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Water);
-
-                                //changeWaterNeighbors(i, j);
-
                                 break;
                             case CellType.Water:
-                                //if (numOfNeighbors >= numWater) {
-                                //    cellsArray[i, j].GetComponent<CubeCell>().setCube(CellType.Water); break;
-                                //}
-                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numWater) ? CellType.Water : CellType.Grass); 
-
+                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors == numWater) ? CellType.Water : CellType.Grass); 
                                 break;
                             default: Debug.Log("Error with cell type"); break;
                         }
-                        //if (m_isStepped) {
-                        //    yield return new WaitForSeconds(0.02f);
-                        //}
                     }
 
                 }
@@ -164,7 +110,6 @@ public class LevelGenerator : MonoBehaviour
         copyArray();
 
         for (int it = 0; it < 1; it++) {
-            // yield return new WaitForSeconds(0.5f);
             for (int i = 0; i < gridWidth; i++) {
                 for (int j = 0; j < gridDepth; j++) {
                     // Check if the cell matrix is empty before creating a new one
@@ -179,15 +124,12 @@ public class LevelGenerator : MonoBehaviour
     }
 
     void setRandomCubes(int i, int j) {
-       // Debug.Log("This");
-        bool randomValue = UnityEngine.Random.Range(0, 100) < 50;
+        bool randomValue = UnityEngine.Random.Range(0, 100) < 20;
         Vector3 cubePos = new Vector3(i - gridWidth * 0.5f, 0, j - gridDepth * 0.5f);
         // Instantiate cube
         GameObject temp = Instantiate(gridElement, cubePos, Quaternion.identity);
-    
         // set cube render to active true or false depending on random value
         temp.GetComponent<CubeCell>().setCube((randomValue) ? CellType.Water : CellType.Grass);
-       
         temp.transform.SetParent(transform);
         // Asign cell to a position in the matrix
         cellsArray[i, j] = temp;
@@ -240,5 +182,13 @@ public class LevelGenerator : MonoBehaviour
                 cellsArrayMap[i, j] = cellsArray[i, j].GetComponent<CubeCell>().getCellType();
             }
         }
+    }
+
+    public GameObject[,] getMap() {
+        return cellsArray;
+    }
+
+    public CellType[,] getCubeMap() {
+        return cellsArrayMap;
     }
 }

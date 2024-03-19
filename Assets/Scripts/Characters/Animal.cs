@@ -14,7 +14,7 @@ public class Animal : MonoBehaviour
 {
     #region Steering Behaviour Attributes
    // [SerializeField]
-    float m_maxSpeed = 5f, m_maxForce = 12f, m_slowingRadius;
+    float m_maxSpeed = 3f, m_maxForce = 6f, m_slowingRadius;
     #endregion
 
     #region Perception
@@ -69,9 +69,9 @@ public class Animal : MonoBehaviour
 
     private void Awake() {
         _gene = new Gene();
-        setMaxSpeed(Random.Range(3f, 9f));
-        setMaxForce(Random.Range(4f, 12f));
-        setPerceptionRadius(Random.Range(10f, 16f));
+        setMaxSpeed(Random.Range(2f, 7f));
+        setMaxForce(Random.Range(4f, 8f));
+        setPerceptionRadius(Random.Range(3f, 10f));
     }
 
     // Start is called before the first frame update

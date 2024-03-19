@@ -28,7 +28,9 @@ public class Chicken : MonoBehaviour
    
     bool doCoroutine = true;
 
-    public float raycastDistance = 1f;
+    public float rotationSpeed = 120f;
+
+    public float raycastDistance = 3f;
     public LayerMask obstacleLayer;
 
     // Start is called before the first frame update
@@ -51,8 +53,8 @@ public class Chicken : MonoBehaviour
     IEnumerator perceive() {
         doCoroutine = false;
         yield return new WaitForSeconds(.5f);
-        perceptionManager();
         survivalSystem();
+        perceptionManager();
         RaycastHit hit;
         if(Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, obstacleLayer)) {
             if(hit.collider.gameObject != waterTarget || isHungry || hasUrge) {
@@ -63,7 +65,11 @@ public class Chicken : MonoBehaviour
     }
 
     void avoidObstacle(RaycastHit hit) {
-        transform.Rotate(Vector3.up * 90f);
+        // Calculate torque based on the rotation operation
+        Vector3 torque = Vector3.up * rotationSpeed;
+        Debug.Log("this");
+        // Apply torque to the Rigidbody
+        _animal.rb.AddTorque(torque);
     }
 
     // Update is called once per frame
@@ -113,7 +119,9 @@ public class Chicken : MonoBehaviour
         bool isSafe = true;
         foreach(GameObject predator in _perceivedThreats) {
             if(Vector3.Distance(transform.position, predator.transform.position) < _animal.getPerceptionRadius()){
-                isSafe = false;
+                if (predator.activeSelf) {
+                    isSafe = false;
+                }
             }
         }
         if( isSafe) {
@@ -236,6 +244,9 @@ public class Chicken : MonoBehaviour
                 break;
             case chickenStates.Evading:
                 _animal.ChangeAnimalState(AnimalState.Evade);
+                if (_animal.getTarget() == null) {
+                    _animal.ChangeAnimalState(AnimalState.Wander);
+                }
                 break;
             default: break;
         }

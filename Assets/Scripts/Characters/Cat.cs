@@ -18,8 +18,10 @@ public class Cat : MonoBehaviour
     GameObject catPrefab;
     bool doCoroutine = true;
 
-    public float raycastDistance = 1f;
+    public float raycastDistance = 3f;
     public LayerMask obstacleLayer;
+
+    public float rotationSpeed = 120f;
 
     // Start is called before the first frame update
     void Start()
@@ -39,8 +41,8 @@ public class Cat : MonoBehaviour
     IEnumerator perceive() {
         doCoroutine = false;
         yield return new WaitForSeconds(.5f);
-        perceptionManager();
         survivalSystem();
+        perceptionManager();
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, obstacleLayer)) {
             if (hit.collider.gameObject != waterTarget || isHungry || hasUrge) {
@@ -51,7 +53,11 @@ public class Cat : MonoBehaviour
     }
 
     void avoidObstacle(RaycastHit hit) {
-        transform.Rotate(Vector3.up * 90f);
+        // Calculate torque based on the rotation operation
+        Vector3 torque = Vector3.up * rotationSpeed;
+
+        // Apply torque to the Rigidbody
+        _animal.rb.AddTorque(torque);
     }
 
 
@@ -99,7 +105,9 @@ public class Cat : MonoBehaviour
         bool isSafe = true;
         foreach(GameObject predator in _perceivedThreats) {
             if(Vector3.Distance(transform.position, predator.transform.position) < _animal.getPerceptionRadius()) {
-                isSafe = false;
+                if (predator.activeSelf) {
+                    isSafe = false;
+                }
             }
         }
         if(isSafe) {
@@ -226,6 +234,9 @@ public class Cat : MonoBehaviour
                 break;
             case catStates.Evading:
                 _animal.ChangeAnimalState(AnimalState.Evade);
+                if(_animal.getTarget() == null) {
+                    _animal.ChangeAnimalState(AnimalState.Wander);
+                }
                 break;
             default: break;
         }
