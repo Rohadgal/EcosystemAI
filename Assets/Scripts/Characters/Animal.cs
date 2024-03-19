@@ -19,7 +19,7 @@ public class Animal : MonoBehaviour
 
     #region Perception
     [SerializeField]
-    public float m_perceptionRadius = 10f;
+    float m_perceptionRadius = 10f;
     GameObject m_target;
     #endregion
 

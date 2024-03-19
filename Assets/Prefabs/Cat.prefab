@@ -594,7 +594,6 @@ GameObject:
   - component: {fileID: 7371755899024986624}
   - component: {fileID: 881057907254939097}
   - component: {fileID: 3412531650979643085}
-  - component: {fileID: 1452388077413722138}
   - component: {fileID: 1446583165473686176}
   - component: {fileID: 1716764288449387290}
   m_Layer: 0
@@ -695,21 +694,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1452388077413722138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8724575979993213932}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40079260bda69f14c80332a04d1632a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movementSpeed: 3
-  jumpForce: 300
-  timeBeforeNextJump: 1.2
 --- !u!114 &1446583165473686176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -746,6 +730,10 @@ MonoBehaviour:
   _perceivedPartner: []
   _perceivedThreats: []
   catPrefab: {fileID: 8724575979993213932}
+  raycastDistance: 1
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 16
 --- !u!1001 &5574970522040367231
 PrefabInstance:
   m_ObjectHideFlags: 0

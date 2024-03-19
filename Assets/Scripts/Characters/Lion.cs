@@ -9,13 +9,16 @@ public class Lion : MonoBehaviour
     Animal _animal;
     lionStates _lionStates;
     public List<GameObject> _perceivedFood, _perceivedWater, _perceivedPartner;
-    bool isHungry = false, isThirsty = false, hasUrge = false, isBusy = false, isSatisfied = true;
+    bool isHungry = false, isThirsty = false, hasUrge = false,/* isBusy = false,*/ isSatisfied = true;
     GameObject foodTarget, waterTarget, partnerTarget;
-    float closestFood = Mathf.Infinity, closestWater = Mathf.Infinity, closestPartner = Mathf.Infinity;
-    float hungerIncrement = 0.1f, thirstIncrement = 0.12f, urgeIncrement = 0.12f;
+    float closestPartner = Mathf.Infinity;
+    float hungerIncrement = 0.23f, thirstIncrement = 0.25f, urgeIncrement = 0.5f;
     [SerializeField]
     GameObject lionPrefab;
     bool doCoroutine = true;
+
+    public float raycastDistance = 1f;
+    public LayerMask obstacleLayer;
 
     // Start is called before the first frame update
     void Start()
@@ -30,22 +33,28 @@ public class Lion : MonoBehaviour
 
         survivalSystem();
     }
-
     IEnumerator perceive() {
         doCoroutine = false;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
         perceptionManager();
         survivalSystem();
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, obstacleLayer)) {
+            if (hit.collider.gameObject != waterTarget || isHungry || hasUrge) {
+                avoidObstacle(hit);
+            }
+        }
         doCoroutine = true;
+    }
+
+    void avoidObstacle(RaycastHit hit) {
+        transform.Rotate(Vector3.up * 90f);
     }
 
     // Update is called once per frame
     void Update() {
-        // survivalSystem();
         if (doCoroutine) {
-
             StartCoroutine(perceive());
-        
         }
     }
 
@@ -53,13 +62,13 @@ public class Lion : MonoBehaviour
         Collider[] perceivedObjects = Physics.OverlapSphere(_animal.getPos(), _animal.getPerceptionRadius());
 
         if(perceivedObjects != null && perceivedObjects.Length > 0 ) {
-            if (isHungry) {
+            if (isHungry && !foodTarget) {
                 seekFood(perceivedObjects);
             }
-            else if (isThirsty) {
+            else if (isThirsty && !waterTarget) {
                 seekWater(perceivedObjects);
             }
-            else if (hasUrge) {
+            else if (hasUrge && !partnerTarget) {
                 seekPartner(perceivedObjects);
             }
         }
@@ -67,41 +76,23 @@ public class Lion : MonoBehaviour
     }
 
     void seekFood(Collider[] t_perceivedObjects) {
-
-        if (t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
-
             foreach (Collider col in t_perceivedObjects) {
-                if (/*col.gameObject.CompareTag("chicken") && !_perceivedFood.Contains(col.gameObject)
-                    || col.gameObject.CompareTag("cat") && !_perceivedFood.Contains(col.gameObject)
-                    || */col.gameObject.CompareTag("dog") && !_perceivedFood.Contains(col.gameObject)) {
+                if (col.gameObject.CompareTag("dog") && !_perceivedFood.Contains(col.gameObject)) {
                     _perceivedFood.Add(col.gameObject);
-                    float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
-                    if (dist < closestFood) {
-                        closestFood = dist;
-                        foodTarget = col.gameObject;
-                        return;
-                    }
+                    foodTarget = col.gameObject;
+                    return;
+
                 }
             }
-        }
     }
 
     void seekWater(Collider[] t_perceivedObjects) {
-        if (t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
-            // closestWater = Mathf.Infinity;
-            foreach (Collider col in t_perceivedObjects) {
-
-                if (col.gameObject.CompareTag("water") && !_perceivedWater.Contains(col.gameObject)) {
-                    _perceivedWater.Add(col.gameObject);
-                    float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
-                    if (dist < closestWater) {
-                        closestWater = dist;
-                        waterTarget = col.gameObject;
-                        return;
-                    }
-                }
+        foreach (Collider col in t_perceivedObjects) {
+            if (col.gameObject.CompareTag("water") && !_perceivedWater.Contains(col.gameObject)) {
+                _perceivedWater.Add(col.gameObject);
+                    waterTarget = col.gameObject;
+                    return;
             }
-            // decisionManager();
         }
     }
 
@@ -109,14 +100,13 @@ public class Lion : MonoBehaviour
         if (t_perceivedObjects != null && t_perceivedObjects.Length != 0) {
             foreach (Collider col in t_perceivedObjects) {
                 if (col.gameObject.CompareTag("lion") && col.gameObject.GetComponent<Animal>().getIsFemale() != _animal.getIsFemale()
-                    && !col.gameObject.GetComponent<Lion>().getIsBusy() && col.gameObject.GetComponent<Lion>().hasUrge
+                  && col.gameObject.GetComponent<Lion>().hasUrge
                     && !_perceivedPartner.Contains(col.gameObject)) {
                     _perceivedPartner.Add(col.gameObject);
                     float dist = Vector3.Distance(transform.position, col.gameObject.transform.position);
                     if (dist < closestPartner) {
                         closestPartner = dist;
                         partnerTarget = col.gameObject;
-                        isBusy = true;
                         return;
                     }
                 }
@@ -126,21 +116,22 @@ public class Lion : MonoBehaviour
 
     void decisionManager() {
 
-        if (isHungry && foodTarget != null /*&& !hasUrge*/) {
+        if (isHungry && foodTarget != null) {
 
             _animal.setTarget(foodTarget);
             _lionStates = lionStates.Seeking;
 
             if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 3f) {
-              //  Debug.LogWarning(Vector3.Distance(transform.position, foodTarget.transform.position));
-                _lionStates = lionStates.Eating;
+               _lionStates = lionStates.Eating;
 
                 actionManager();
                 return;
             }
+            movementManager();
+            return;
         }
 
-        else if (isThirsty && waterTarget != null /*&& !hasUrge*/) {
+        else if (isThirsty && waterTarget != null) {
 
             _animal.setTarget(waterTarget);
             _lionStates = lionStates.Seeking;
@@ -151,6 +142,8 @@ public class Lion : MonoBehaviour
                 actionManager();
                 return;
             }
+            movementManager();
+            return;
         }
 
         else if (hasUrge && partnerTarget != null) {
@@ -162,6 +155,8 @@ public class Lion : MonoBehaviour
                 actionManager();
                 return;
             }
+            movementManager();
+            return;
         }
 
         if (isSatisfied) {
@@ -169,7 +164,6 @@ public class Lion : MonoBehaviour
         }
 
         movementManager();
-        actionManager();
     }
 
     void movementManager() {
@@ -239,7 +233,8 @@ public class Lion : MonoBehaviour
         isHungry = false;
         _food.SetActive(false);
         _perceivedFood.Clear();
-        closestFood = Mathf.Infinity;
+        foodTarget = null;
+        _animal.setTarget(null);
         _animal.setHunger(0f);
         isSatisfied = true;
     }
@@ -247,10 +242,11 @@ public class Lion : MonoBehaviour
     void drink(GameObject _water) {
         isThirsty = false;
         _perceivedWater.Clear();
-        closestWater = Mathf.Infinity;
-        if (!isHungry) {
-            _animal.setTarget(null);
-        }
+        waterTarget = null;
+        _animal.setTarget(null);
+        //if (!isHungry) {
+        //    _animal.setTarget(null);
+        //}
         _animal.setThirst(0f);
         isSatisfied = true;
     }
@@ -259,14 +255,15 @@ public class Lion : MonoBehaviour
         if (_animal.getIsFemale()) {
             _animal.procreate(t_partner.GetComponent<Animal>(), lionPrefab);
         }
-        isBusy = false;
+       // isBusy = false;
         _perceivedPartner.Clear();
+        _animal.setTarget(null);
         partnerTarget = null;
         _animal.setUrge(0f);
         hasUrge = false;
     }
 
-    public bool getIsBusy() { return isBusy; }
+  //  public bool getIsBusy() { return isBusy; }
 
     public void setUrge(bool t_hasUrge) {
         hasUrge = t_hasUrge;
