@@ -110,7 +110,7 @@ In "Ecosystem Simulator: Survival of the Fittest," players are tasked with overs
             _chickenStates = chickenStates.Wandering;
         }
         movementManager();
-    }
+      }
   
 - **Genetic Inheritance and Mutation:** Witness the genetic inheritance and occasional mutation as animals reproduce, introducing variability and potential advantages.
 
