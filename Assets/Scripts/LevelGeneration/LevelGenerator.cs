@@ -29,10 +29,8 @@ public class LevelGenerator : MonoBehaviour
 
 
     private void Start() {
-        // Check if cell has been defined and check and assign it's dimension
+        // Check if cell has been defined 
         if (gridElement != null) {
-            //prefabWidth = gridElement.GetComponent<MeshRenderer>().bounds.size.x;
-            //prefabDepth = gridElement.GetComponent<MeshRenderer>().bounds.size.z;
             generateGrid();
             return;
         }
@@ -85,7 +83,6 @@ public class LevelGenerator : MonoBehaviour
         copyArray();
 
         for(int it=0; it<iterations; it++) {
-           // yield return new WaitForSeconds(0.5f);
             for (int i = 0; i < gridWidth; i++) {
                 for (int j = 0; j < gridDepth; j++) {
                     // Check if the cell matrix is empty before creating a new one

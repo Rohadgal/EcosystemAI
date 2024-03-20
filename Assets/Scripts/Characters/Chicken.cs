@@ -71,14 +71,10 @@ public class Chicken : MonoBehaviour
     void avoidObstacle(RaycastHit hit) {
         // Calculate torque based on the rotation operation
         Vector3 torque = Vector3.up * rotationSpeed;
-        // Debug.Log("this");
-        // Apply torque to the Rigidbody
         _animal.rb.velocity += changeDir;
     }
 
-    // Update is called once per frame
     void Update() {
-        // survivalSystem();
         if (doCoroutine) {
 
             StartCoroutine(perceive());
@@ -290,7 +286,6 @@ public class Chicken : MonoBehaviour
         _animal._gene.urgeSystem(_animal, urgeIncrement);
 
         if (_animal.getHunger() > _animal._gene.feelHungry) {
-            //Debug.LogWarning("hungry: " + isHungry);
             isHungry = true;
             isSatisfied = false;
         }
@@ -300,13 +295,11 @@ public class Chicken : MonoBehaviour
         }
         if (_animal.getUrge() > _animal._gene.feelUrge) {
             hasUrge = true;
-           //isSatisfied = false;
         }
     }
 
     void setGenes() {
         _animal.setGender(Random.Range(0, 150) < 75f);
-        //Debug.Log(_animal.getIsFemale());
         _animal._gene.feelHungry = Random.Range(20f, 40f);
         _animal._gene.feelThirst = Random.Range(30f, 50f);
         _animal._gene.feelUrge = Random.Range(20,60f);

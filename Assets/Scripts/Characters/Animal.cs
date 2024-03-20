@@ -69,7 +69,7 @@ public class Animal : MonoBehaviour
 
     private void Awake() {
         _gene = new Gene();
-        setMaxSpeed(Random.Range(2f, 7f));
+        setMaxSpeed(Random.Range(1f, 4f));
         setMaxForce(Random.Range(4f, 8f));
         setPerceptionRadius(Random.Range(3f, 10f));
     }
@@ -329,8 +329,6 @@ public class Animal : MonoBehaviour
     void OnDrawGizmos() {
         if(m_target != null) {
             Gizmos.color = Color.red;
-           // Gizmos.DrawWireSphere(this.transform.position, m_perceptionRadius);
-            //Gizmos.color = Color.cyan;
             Gizmos.DrawLine(this.transform.position, m_target.transform.position);
         }
     }
@@ -352,25 +350,17 @@ public class Animal : MonoBehaviour
         offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * randomValueThirst;
         offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * randomValueUrge;
 
-        //Debug.Log("f hungry: " + offspringGene.feelHungry);
-        //Debug.Log("f thirsty: " + offspringGene.feelThirst);
-        //Debug.Log("f Urge: " + offspringGene.feelUrge);
-
         return offspringGene;
     }
 
     public void procreate(Animal t_partner, GameObject t_prefab) {
         Gene offspringGene = GenerateOffspringGene(t_partner._gene);
 
-  
-
         Animal offspringOne = instantiateOffspring(t_prefab);
         Animal offspringTwo = instantiateOffspring(t_prefab);
 
-
         float speed = ((t_partner.getMaxSpeed() + m_maxSpeed) * 0.5f);
         float perceptionRadius = ((t_partner.getPerceptionRadius() + m_perceptionRadius) * 0.5f);
-
 
         offspringOne.setMaxSpeed(speed);
         offspringOne.setPerceptionRadius(perceptionRadius);

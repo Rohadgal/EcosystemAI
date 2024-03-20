@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\Characters\Lion.cs" />
     <Compile Include="Assets\Scripts\Characters\Dog.cs" />
     <Compile Include="Assets\Scripts\Characters\Animal.cs" />
+    <Compile Include="Assets\Scripts\AnimalCanvasController.cs" />
     <Compile Include="Assets\VoxelAnimals\Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Managers\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Characters\Cat.cs" />
