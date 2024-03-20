@@ -132,7 +132,7 @@ In "Ecosystem Simulator: Survival of the Fittest," players are tasked with overs
         offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * randomValueUrge;
 
         return offspringGene;
-    }
+      }
   
 - **Inter-Species Interactions:** Experience the intricate predator-prey relationships between animals, influencing the ecosystem's balance.
 - **Environmental Factors:** Adapt to environmental changes like climate variations, resource availability, and natural disasters.
