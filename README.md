@@ -42,74 +42,23 @@ In "Ecosystem Simulator: Survival of the Fittest," players are tasked with overs
         }
   
 - **Realistic Animal Behaviors:** Animals exhibit lifelike behaviors such as thirst, hunger, and the urge to reproduce, requiring players to monitor and manage their needs.
+  
+       void survivalSystem() {
+        _animal._gene.hungerSystem(_animal, hungerIncrement);
+        _animal._gene.thirstSystem(_animal, thirstIncrement);
+        _animal._gene.urgeSystem(_animal, urgeIncrement);
 
-      void decisionManager() {
-        if(isInDanger && hunterTarget != null) {
-            
-            _animal.setTarget(hunterTarget);
-            
-            _chickenStates = chickenStates.Evading;
-            movementManager();
-            return;
+        if (_animal.getHunger() > _animal._gene.feelHungry) {
+            isHungry = true;
+            isSatisfied = false;
         }
-
-        else if (isHungry && foodTarget != null) {
-
-
-            if (!foodTarget.activeSelf) {
-                foodTarget = null;
-                _perceivedFood.Clear();
-                perceptionManager();
-                return;
-            }
-
-            _animal.setTarget(foodTarget);
-             _chickenStates = chickenStates.Seeking;
-           
-             if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
-                 _chickenStates = chickenStates.Eating;
-                 
-                 actionManager();
-                 return;
-             }
-            movementManager();
-            return;
+        if (_animal.getThirst() > _animal._gene.feelThirst) {
+            isThirsty = true;
+            isSatisfied = false;
         }
-
-        else if (isThirsty && waterTarget != null) {
-
-
-            _animal.setTarget(waterTarget);
-            _chickenStates = chickenStates.Seeking;
-
-            if(Vector3.Distance(transform.position, waterTarget.transform.position) <= 2f) {
-                _chickenStates = chickenStates.Drinking;
-                  
-                actionManager();
-                return;
-            }
-            movementManager();
-            return;
+        if (_animal.getUrge() > _animal._gene.feelUrge) {
+            hasUrge = true;
         }
-
-       else if(hasUrge && partnerTarget != null) {
-            _animal.setTarget(partnerTarget);
-            _chickenStates = chickenStates.Seeking;
-
-            if(Vector3.Distance(transform.position, partnerTarget.transform.position) <= 2f) {
-             
-                _chickenStates = chickenStates.Reproducing;
-                actionManager();
-                return;
-            }
-            movementManager();
-            return;
-        }
-
-        if(isSatisfied) {
-            _chickenStates = chickenStates.Wandering;
-        }
-        movementManager();
       }
   
 - **Genetic Inheritance and Mutation:** Witness the genetic inheritance and occasional mutation as animals reproduce, introducing variability and potential advantages.
