@@ -101,6 +101,10 @@ public class Animal : MonoBehaviour
         if(_hunger >= 100 || _thirst >= 100) {
             gameObject.SetActive(false);
         }
+
+        if(_urge > 100) {
+            _urge = 100;
+        }
     }
 
     #region Steering Behaviours
@@ -324,7 +328,6 @@ public class Animal : MonoBehaviour
 
     void OnDrawGizmos() {
         if(m_target != null) {
-
             Gizmos.color = Color.red;
            // Gizmos.DrawWireSphere(this.transform.position, m_perceptionRadius);
             //Gizmos.color = Color.cyan;
@@ -338,18 +341,21 @@ public class Animal : MonoBehaviour
         float randomValueHunger = 0.5f;
         float randomValueThirst = 0.5f;
         float randomValueUrge = 0.5f;
+
         if(Random.Range(0,100) < 25) {
-            randomValueHunger = Random.Range(0.4f,2.0f);
-            randomValueThirst = Random.Range(0.4f, 2.0f);
-            randomValueUrge = Random.Range(0.4f, 2.0f);
+            randomValueHunger = Random.Range(0.2f, 1.5f);
+            randomValueThirst = Random.Range(0.2f, 1.5f);
+            randomValueUrge = Random.Range(0.2f, 1.5f);
         }
+
         offspringGene.feelHungry = (_gene.feelHungry + partnerGene.feelHungry) * randomValueHunger;
         offspringGene.feelThirst = (_gene.feelThirst + partnerGene.feelThirst) * randomValueThirst;
         offspringGene.feelUrge = (_gene.feelUrge + partnerGene.feelUrge) * randomValueUrge;
 
-        Debug.Log("f hungry: " + offspringGene.feelHungry);
-        Debug.Log("f thirsty: " + offspringGene.feelThirst);
-        Debug.Log("f Urge: " + offspringGene.feelUrge);
+        //Debug.Log("f hungry: " + offspringGene.feelHungry);
+        //Debug.Log("f thirsty: " + offspringGene.feelThirst);
+        //Debug.Log("f Urge: " + offspringGene.feelUrge);
+
         return offspringGene;
     }
 
@@ -361,18 +367,19 @@ public class Animal : MonoBehaviour
         Animal offspringOne = instantiateOffspring(t_prefab);
         Animal offspringTwo = instantiateOffspring(t_prefab);
 
-        float randomValue = Random.Range(1.2f, 2f);
 
         float speed = ((t_partner.getMaxSpeed() + m_maxSpeed) * 0.5f);
         float perceptionRadius = ((t_partner.getPerceptionRadius() + m_perceptionRadius) * 0.5f);
 
+
+        offspringOne.setMaxSpeed(speed);
+        offspringOne.setPerceptionRadius(perceptionRadius);
+
+        float randomValue = Random.Range(1.2f, 2f);
         if(Random.Range(0, 100) < 30) {
             speed *= randomValue;
             perceptionRadius *= randomValue;
         }
-
-        offspringOne.setMaxSpeed(speed);
-        offspringOne.setPerceptionRadius(perceptionRadius);
 
         offspringTwo.setMaxSpeed(speed);
         offspringTwo.setPerceptionRadius(perceptionRadius);

@@ -10,8 +10,8 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     GameObject gridElement;
 
-    public int gridWidth { get; set; } = 68;
-    public int gridDepth { get; set; } = 68;
+    public int gridWidth { get; set; } = 80;
+    public int gridDepth { get; set; } = 80;
     public int iterations = 5;
 
     public int numGrass = 5;
@@ -97,7 +97,7 @@ public class LevelGenerator : MonoBehaviour
                                 cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Water);
                                 break;
                             case CellType.Water:
-                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors == numWater) ? CellType.Water : CellType.Grass); 
+                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numWater) ? CellType.Water : CellType.Grass); 
                                 break;
                             default: Debug.Log("Error with cell type"); break;
                         }
@@ -124,7 +124,7 @@ public class LevelGenerator : MonoBehaviour
     }
 
     void setRandomCubes(int i, int j) {
-        bool randomValue = UnityEngine.Random.Range(0, 100) < 20;
+        bool randomValue = UnityEngine.Random.Range(0, 2) < 1;
         Vector3 cubePos = new Vector3(i - gridWidth * 0.5f, 0, j - gridDepth * 0.5f);
         // Instantiate cube
         GameObject temp = Instantiate(gridElement, cubePos, Quaternion.identity);
@@ -143,13 +143,14 @@ public class LevelGenerator : MonoBehaviour
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (cellsArrayMap[x, y] == CellType.Water) {
+                    cellsArray[x,y].transform.position = new Vector3(cellsArray[x,y].transform.position.x, -0.1f , cellsArray[x, y].transform.position.z);
                     if (cellsArrayMap[x + i, y + j] == CellType.Grass) {
                         cellsArray[x + i, y + j].GetComponent<CubeCell>().setCube(CellType.Ground);
                     }
-                } else if (cellsArrayMap[x, y] == CellType.Grass) {
-                    if (cellsArrayMap[x + i, y + j] == CellType.Water) {
-                        cellsArray[x, y].GetComponent<CubeCell>().setCube(CellType.Ground);
-                    }
+                //} else if (cellsArrayMap[x, y] == CellType.Grass) {
+                //    if (cellsArrayMap[x + i, y + j] == CellType.Water) {
+                //        cellsArray[x, y].GetComponent<CubeCell>().setCube(CellType.Ground);
+                //    }
                 }
             }
         }
@@ -171,7 +172,7 @@ public class LevelGenerator : MonoBehaviour
             }
         }
         // Minus one to ignore the center cell comparing with itself
-        return num - 1;
+        return --num;
     }
 
     // Copy matrix array to check the condition of the next generation of cells without affecting the original matrix of cells

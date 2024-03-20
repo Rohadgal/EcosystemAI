@@ -22,9 +22,16 @@ public class Lion : MonoBehaviour
 
     public float rotationSpeed = 120f;
 
+    [SerializeField]
+    AudioSource audioSource;
+    AudioClip clip;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (audioSource != null) {
+            clip = audioSource.clip;
+        }
         _animal = GetComponent<Animal>();
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
@@ -42,7 +49,9 @@ public class Lion : MonoBehaviour
         perceptionManager();
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, obstacleLayer)) {
-            if (hit.collider.gameObject != waterTarget || isHungry || hasUrge) {
+            if (hit.collider.gameObject == waterTarget) {
+
+            } else {
                 avoidObstacle(hit);
             }
         }
@@ -235,14 +244,15 @@ public class Lion : MonoBehaviour
 
     void setGenes() {
         _animal.setGender(Random.Range(0, 150) < 75f);
-       // Debug.Log(_animal.getIsFemale());
-        _animal._gene.feelHungry = 20f;
-        _animal._gene.feelThirst = 40f;
-        _animal._gene.feelUrge = 60f;
+        _animal._gene.feelHungry = Random.Range(5, 70);
+        _animal._gene.feelThirst = Random.Range(5, 60);
+        _animal._gene.feelUrge = Random.Range(30, 50);
     }
 
     void eat(GameObject _food) {
-     
+        if (audioSource != null && Random.Range(0, 100) < 5) {
+            audioSource.PlayOneShot(clip);
+        }
         isHungry = false;
         _food.SetActive(false);
         _perceivedFood.Clear();
@@ -257,9 +267,6 @@ public class Lion : MonoBehaviour
         _perceivedWater.Clear();
         waterTarget = null;
         _animal.setTarget(null);
-        //if (!isHungry) {
-        //    _animal.setTarget(null);
-        //}
         _animal.setThirst(0f);
         isSatisfied = true;
     }

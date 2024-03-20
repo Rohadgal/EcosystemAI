@@ -23,9 +23,16 @@ public class Cat : MonoBehaviour
 
     public float rotationSpeed = 120f;
 
+    [SerializeField]
+    AudioSource audioSource;
+    AudioClip clip;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (audioSource != null) {
+            clip = audioSource.clip;
+        }
         _animal = GetComponent<Animal>();
         _perceivedFood = new List<GameObject>();
         _perceivedWater = new List<GameObject>();
@@ -45,7 +52,9 @@ public class Cat : MonoBehaviour
         perceptionManager();
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, obstacleLayer)) {
-            if (hit.collider.gameObject != waterTarget || isHungry || hasUrge) {
+            if (hit.collider.gameObject == waterTarget) {
+
+            } else {
                 avoidObstacle(hit);
             }
         }
@@ -171,8 +180,20 @@ public class Cat : MonoBehaviour
 
         else if (isHungry && foodTarget != null /*&& !hasUrge*/) {
 
+            if (!foodTarget.activeSelf) {
+                foodTarget = null;
+                _perceivedFood.Clear();
+                perceptionManager();
+                return;
+            }
+
+
             _animal.setTarget(foodTarget);
             _catStates = catStates.Seeking;
+
+            if(audioSource != null && Random.Range(0,100) < 15)  {
+                 audioSource.PlayOneShot(clip);
+            }
 
             if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
                 _catStates = catStates.Eating;
@@ -281,10 +302,9 @@ public class Cat : MonoBehaviour
 
     void setGenes() {
         _animal.setGender(Random.Range(0, 150) < 75f);
-      //  Debug.Log(_animal.getIsFemale());
-        _animal._gene.feelHungry = 20f;
-        _animal._gene.feelThirst = 40f;
-        _animal._gene.feelUrge = 60f;
+        _animal._gene.feelHungry = Random.Range(20, 60);
+        _animal._gene.feelThirst = Random.Range(20, 60);
+        _animal._gene.feelUrge = Random.Range(20, 60);
     }
 
     void eat(GameObject _food) {

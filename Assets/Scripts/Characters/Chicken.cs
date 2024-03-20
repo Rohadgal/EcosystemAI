@@ -33,6 +33,8 @@ public class Chicken : MonoBehaviour
     public float raycastDistance = 3f;
     public LayerMask obstacleLayer;
 
+    Vector3 changeDir = new Vector3(3f, 0f, -1f);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,7 +59,9 @@ public class Chicken : MonoBehaviour
         perceptionManager();
         RaycastHit hit;
         if(Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance, obstacleLayer)) {
-            if(hit.collider.gameObject != waterTarget || isHungry || hasUrge) {
+            if(hit.collider.gameObject == waterTarget) {
+
+            } else {
                 avoidObstacle(hit);
             }
         }
@@ -67,9 +71,9 @@ public class Chicken : MonoBehaviour
     void avoidObstacle(RaycastHit hit) {
         // Calculate torque based on the rotation operation
         Vector3 torque = Vector3.up * rotationSpeed;
-        Debug.Log("this");
+        // Debug.Log("this");
         // Apply torque to the Rigidbody
-        _animal.rb.AddTorque(torque);
+        _animal.rb.velocity += changeDir;
     }
 
     // Update is called once per frame
@@ -182,7 +186,16 @@ public class Chicken : MonoBehaviour
         }
 
         else if (isHungry && foodTarget != null) {
-             _animal.setTarget(foodTarget);
+
+
+            if (!foodTarget.activeSelf) {
+                foodTarget = null;
+                _perceivedFood.Clear();
+                perceptionManager();
+                return;
+            }
+
+            _animal.setTarget(foodTarget);
              _chickenStates = chickenStates.Seeking;
            
              if (Vector3.Distance(transform.position, foodTarget.transform.position) <= 2f) {
@@ -196,7 +209,8 @@ public class Chicken : MonoBehaviour
         }
 
         else if (isThirsty && waterTarget != null) {
-            
+
+
             _animal.setTarget(waterTarget);
             _chickenStates = chickenStates.Seeking;
 
