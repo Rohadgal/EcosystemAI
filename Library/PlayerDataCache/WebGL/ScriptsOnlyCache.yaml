@@ -2,6 +2,7 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - Animal
+    - AnimalCanvasController
     - Cat
     - Chicken
     - CubeCell
@@ -178,7 +179,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 22452}
     - Class: 114
-      Script: {instanceID: 22782}
+      Script: {instanceID: 22484}
+    - Class: 114
+      Script: {instanceID: 22784}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1195,6 +1198,12 @@ ScriptsOnlyBuild:
     className: UnityOnMouseUpMessageListener
   - hash:
       serializedVersion: 2
+      Hash: 751e5bae2a317288c2ab58d66687092b
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: AnimalCanvasController
+  - hash:
+      serializedVersion: 2
       Hash: 28873fe9170abb2910f2c4b88a93bb0f
     assemblyName: Unity.TextMeshPro
     namespaceName: TMPro
@@ -1251,4 +1260,4 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/Scenes/MainMenu.unity
   - Assets/Scenes/GameLevel.unity
-  playerPath: C:/Users/Adrian/Documents/GitHub/IA/EnvironmentAI/newBuild
+  playerPath: C:/Users/Adrian/Documents/GitHub/IA/envBuild

@@ -1,30 +1,23 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMonkey_HealthSystem", "CodeMonkey_HealthSystem.csproj", "{CAE7B4A1-7EF9-8895-9FF2-9BEB1497A7CD}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMonkey_HealthSystem", "CodeMonkey_HealthSystem.csproj", "{a1b4e7ca-f97e-9588-9ff2-9beb1497a7cd}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{5102DF36-C8CE-BEBF-9787-C35D482DFD83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{36df0251-cec8-bfbe-9787-c35d482dfd83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMonkey_HealthSystem_Editor", "CodeMonkey_HealthSystem_Editor.csproj", "{0C21C357-5EEC-3B37-BD56-8A6AEFBAE446}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMonkey_HealthSystem_Editor", "CodeMonkey_HealthSystem_Editor.csproj", "{57c3210c-ec5e-373b-bd56-8a6aefbae446}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CAE7B4A1-7EF9-8895-9FF2-9BEB1497A7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAE7B4A1-7EF9-8895-9FF2-9BEB1497A7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAE7B4A1-7EF9-8895-9FF2-9BEB1497A7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAE7B4A1-7EF9-8895-9FF2-9BEB1497A7CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5102DF36-C8CE-BEBF-9787-C35D482DFD83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5102DF36-C8CE-BEBF-9787-C35D482DFD83}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5102DF36-C8CE-BEBF-9787-C35D482DFD83}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5102DF36-C8CE-BEBF-9787-C35D482DFD83}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C21C357-5EEC-3B37-BD56-8A6AEFBAE446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C21C357-5EEC-3B37-BD56-8A6AEFBAE446}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C21C357-5EEC-3B37-BD56-8A6AEFBAE446}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C21C357-5EEC-3B37-BD56-8A6AEFBAE446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{a1b4e7ca-f97e-9588-9ff2-9beb1497a7cd}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{a1b4e7ca-f97e-9588-9ff2-9beb1497a7cd}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36df0251-cec8-bfbe-9787-c35d482dfd83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36df0251-cec8-bfbe-9787-c35d482dfd83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57c3210c-ec5e-373b-bd56-8a6aefbae446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57c3210c-ec5e-373b-bd56-8a6aefbae446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

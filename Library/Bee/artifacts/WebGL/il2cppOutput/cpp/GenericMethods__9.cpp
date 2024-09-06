@@ -383,6 +383,7 @@ struct Type_t;
 struct UIElementsBridge_tC28FCEDF493CD746D1973AB27BA2CBA393EB4BA8;
 struct UIRenderDevice_t59628CBA89B4617E832C2B270E1C1A3931D01302;
 struct UnityAction_t11A1F3B953B365C072A5DCC32677EE1796A962A7;
+struct UnityException_tA1EC1E95ADE689CF6EB7FAFF77C160AE1F559067;
 struct UxmlAsset_t3390B2BDC40F2F8C1E82D9E0E724998D51BA109A;
 struct UxmlAttributeDescription_t742D021489DB2B564142146CAAAC3F9191825EF2;
 struct UxmlObjectAsset_tC01ADA4F547B35AFDFED4AF9106CA475214ECFD8;
@@ -820,6 +821,12 @@ struct NativeArray_1_t275C00CC374DEA66C69B3BB3992116F315A8E934
 	int32_t ___m_AllocatorLabel;
 };
 struct NativeArray_1_tB60512C6E4578B7CC8EB79321680E495E69ABF81 
+{
+	void* ___m_Buffer;
+	int32_t ___m_Length;
+	int32_t ___m_AllocatorLabel;
+};
+struct NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 
 {
 	void* ___m_Buffer;
 	int32_t ___m_Length;
@@ -3926,9 +3933,15 @@ struct StyleValue_t56307594EC04E04EFBCC3220595B4AAD66FF93C5
 struct SystemException_tCC48D868298F4C0705279823E34B00F4FBDB7295  : public Exception_t
 {
 };
+struct Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
 struct Type_t  : public MemberInfo_t
 {
 	RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B ____impl;
+};
+struct UnityException_tA1EC1E95ADE689CF6EB7FAFF77C160AE1F559067  : public Exception_t
+{
 };
 struct VisualElement_t2667F9D19E62C7A315927506C06F223AB9234115  : public Focusable_t39F2BAF0AF6CA465BC2BEDAF9B5B2CF379B846D0
 {
@@ -4108,6 +4121,9 @@ struct InvalidOperationException_t5DDE4D49B7405FAAB1E4576F4715A42A3FAD4BAB  : pu
 {
 };
 struct NotSupportedException_t1429765983D409BD2986508963C98D214E4EBF4A  : public SystemException_tCC48D868298F4C0705279823E34B00F4FBDB7295
+{
+};
+struct Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4  : public Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700
 {
 };
 struct VisualTreeAsset_tFB5BF81F0780A412AE5A7C2C552B3EEA64EA2EEB  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
@@ -4382,6 +4398,10 @@ struct StyleComplexSelector_tE46C29F65FDBA48D3152781187401C8B55B7D8AD_StaticFiel
 {
 	Dictionary_2_t29D782BF5D0A26D11A04865B4306B86575506834* ___s_PseudoStates;
 	List_1_t85FF16594D5F70EECC5855882558F8E26EF6BAFF* ___m_HashList;
+};
+struct Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700_StaticFields
+{
+	int32_t ___GenerateAllMips;
 };
 struct Type_t_StaticFields
 {
@@ -4679,6 +4699,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Vector_1__ctor_m46ADEA122EFBA7AEF4877168
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Vector_1__ctor_m48CD7847B9597F3193C9C0BA97ED64E276F4340A_gshared (Vector_1_tACF5C606E327928B31CCD8E09C9224DCA7065489* __this, Register_t483055A1DB8634BA3FBF01BB15D4E94E186A2E7A* ___0_existingRegister, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_NO_INLINE IL2CPP_METHOD_ATTR void List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4_gshared (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___0_item, const RuntimeMethod* method) ;
 
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR UnityException_tA1EC1E95ADE689CF6EB7FAFF77C160AE1F559067* Texture_CreateNonReadableException_m29786CD930E89C281564A9B341FD4088FBC8C94F (Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700* __this, Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700* ___0_t, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR uint64_t Texture2D_GetRawImageDataSize_mBD92C0F2A09A023841785BBB642C2B7696EE7CBE (Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR UnityException_tA1EC1E95ADE689CF6EB7FAFF77C160AE1F559067* Texture_CreateNativeArrayLengthOverflowException_m508BE4928B3768ED618EF1FA10E022F6FF12F870 (Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR intptr_t Texture2D_GetWritableImageData_m8E26026A332040F8713E5A2A13C5545797159A5E (Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* __this, int32_t ___0_frame, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void* IntPtr_op_Explicit_m2728CBA081E79B97DDCF1D4FAD77B309CA1E94BF (intptr_t ___0_value, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ThrowHelper_ThrowArgumentNullException_m05B7DB75576C421D7CA84FA73F84D7E114974CEC (int32_t ___0_argument, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Type_t* Type_GetTypeFromHandle_m6062B81682F79A4D6DF2640692EE6D9987858C57 (RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B ___0_handle, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Concat_m8855A6DE10F84DA7F4EC113CADDB59873A25573B (String_t* ___0_str0, String_t* ___1_str1, String_t* ___2_str2, const RuntimeMethod* method) ;
@@ -5198,6 +5223,77 @@ inline void Vector_1__ctor_m48CD7847B9597F3193C9C0BA97ED64E276F4340A (Vector_1_t
 inline void List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4 (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___0_item, const RuntimeMethod* method)
 {
 	((  void (*) (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D*, RuntimeObject*, const RuntimeMethod*))List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4_gshared)(__this, ___0_item, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 Texture2D_GetRawTextureData_TisIl2CppFullySharedGenericStruct_mDC6FE57DC7D62BAC05E6231541767FA81448490E_gshared (Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* __this, const RuntimeMethod* method) 
+{
+	il2cpp_rgctx_method_init(method);
+	int32_t V_0 = 0;
+	uint64_t V_1 = 0;
+	NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 V_2;
+	memset((&V_2), 0, sizeof(V_2));
+	bool V_3 = false;
+	bool V_4 = false;
+	NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 V_5;
+	memset((&V_5), 0, sizeof(V_5));
+	{
+		bool L_0;
+		L_0 = VirtualFuncInvoker0< bool >::Invoke(8, (Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700*)__this);
+		V_3 = (bool)((((int32_t)L_0) == ((int32_t)0))? 1 : 0);
+		bool L_1 = V_3;
+		if (!L_1)
+		{
+			goto IL_0016;
+		}
+	}
+	{
+		UnityException_tA1EC1E95ADE689CF6EB7FAFF77C160AE1F559067* L_2;
+		L_2 = Texture_CreateNonReadableException_m29786CD930E89C281564A9B341FD4088FBC8C94F((Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700*)__this, (Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700*)__this, NULL);
+		IL2CPP_RAISE_MANAGED_EXCEPTION(L_2, method);
+	}
+
+IL_0016:
+	{
+		int32_t L_3;
+		L_3 = ((  int32_t (*) (const RuntimeMethod*))il2cpp_codegen_get_direct_method_pointer(il2cpp_rgctx_method(method->rgctx_data, 0)))(il2cpp_rgctx_method(method->rgctx_data, 0));
+		V_0 = L_3;
+		uint64_t L_4;
+		L_4 = Texture2D_GetRawImageDataSize_mBD92C0F2A09A023841785BBB642C2B7696EE7CBE(__this, NULL);
+		int32_t L_5 = V_0;
+		V_1 = (uint64_t)((int64_t)((uint64_t)(int64_t)L_4/(uint64_t)(int64_t)((int64_t)L_5)));
+		uint64_t L_6 = V_1;
+		V_4 = (bool)((!(((uint64_t)L_6) <= ((uint64_t)((int64_t)((int32_t)2147483647LL)))))? 1 : 0);
+		bool L_7 = V_4;
+		if (!L_7)
+		{
+			goto IL_003c;
+		}
+	}
+	{
+		UnityException_tA1EC1E95ADE689CF6EB7FAFF77C160AE1F559067* L_8;
+		L_8 = Texture_CreateNativeArrayLengthOverflowException_m508BE4928B3768ED618EF1FA10E022F6FF12F870((Texture_t791CBB51219779964E0E8A2ED7C1AA5F92A4A700*)__this, NULL);
+		IL2CPP_RAISE_MANAGED_EXCEPTION(L_8, method);
+	}
+
+IL_003c:
+	{
+		intptr_t L_9;
+		L_9 = Texture2D_GetWritableImageData_m8E26026A332040F8713E5A2A13C5545797159A5E(__this, 0, NULL);
+		void* L_10;
+		L_10 = IntPtr_op_Explicit_m2728CBA081E79B97DDCF1D4FAD77B309CA1E94BF(L_9, NULL);
+		uint64_t L_11 = V_1;
+		NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 L_12;
+		L_12 = ((  NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 (*) (void*, int32_t, int32_t, const RuntimeMethod*))il2cpp_codegen_get_direct_method_pointer(il2cpp_rgctx_method(method->rgctx_data, 1)))(L_10, ((int32_t)L_11), (int32_t)1, il2cpp_rgctx_method(method->rgctx_data, 1));
+		V_2 = L_12;
+		NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 L_13 = V_2;
+		V_5 = L_13;
+		goto IL_0056;
+	}
+
+IL_0056:
+	{
+		NativeArray_1_tDB8B8DC66CC8E16ED6D9A8C75D2C1AFC80AC1E18 L_14 = V_5;
+		return L_14;
+	}
 }
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ThrowHelper_IfNullAndNullsAreIllegalThenThrow_TisContentHeightCacheInfo_tA616347D46981FC5684B6268FC7035C431E99FBC_m1CB4F3E56295F4B5567E64280A4ACECF3FC671D6_gshared (RuntimeObject* ___0_value, int32_t ___1_argName, const RuntimeMethod* method) 
 {

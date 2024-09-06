@@ -12,6 +12,16 @@
 
 
 
+extern void AnimalCanvasController_Start_mF9517E85D8084506B2C9B959EA6AEB6443CB5F78 (void);
+extern void AnimalCanvasController_wait_mB0E188A725AFA2E3FF8E357022EE0EAF123DA1EC (void);
+extern void AnimalCanvasController_Update_mB392F1EB1A3223AABBE5377A8E9787AFD5923C56 (void);
+extern void AnimalCanvasController__ctor_m65668FAEB1CA0CE8AAA33022C99009DC43F93474 (void);
+extern void U3CwaitU3Ed__2__ctor_m2F49BD30132BF44E020BC6E68E8FDBD855A92726 (void);
+extern void U3CwaitU3Ed__2_System_IDisposable_Dispose_mC4EF5730E98F5D76BD99B6E4449850D2B18C9666 (void);
+extern void U3CwaitU3Ed__2_MoveNext_mBBCAFFF6EE522D5ED1BCC92E7E84F798D5D14E38 (void);
+extern void U3CwaitU3Ed__2_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_mE2AB298372334D82E3C7F2DBA8A730950DD9BE20 (void);
+extern void U3CwaitU3Ed__2_System_Collections_IEnumerator_Reset_m0E1E4549F0ACD4585506B4DCB9D2954667C1C732 (void);
+extern void U3CwaitU3Ed__2_System_Collections_IEnumerator_get_Current_mF1E713C32DE93C2BB28AA3D35FDD819C524DBB37 (void);
 extern void Animal_get_isChild_m2DC66D53F24795C7B4BB285DF099086680746FCA (void);
 extern void Animal_set_isChild_mFB9450F3EABB2CC2CE0D7D477205A98557CBFD44 (void);
 extern void Animal_Awake_m5CBCBEF4CE7648B200F4A3881C4B6D5A52C7B772 (void);
@@ -246,8 +256,18 @@ extern void PlayerController_ControllPlayer_m6C7D20E8F3BEF75E7739BA6CC0811083DF1
 extern void PlayerController__ctor_mDDAB7C7D82E1A5B3E6C197B1AB9D653DFE554F33 (void);
 extern void UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_mBEB95BEB954BB63E9710BBC7AD5E78C4CB0A0033 (void);
 extern void UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_mE70FB23ACC1EA12ABC948AA22C2E78B2D0AA39B1 (void);
-static Il2CppMethodPointer s_methodPointers[234] = 
+static Il2CppMethodPointer s_methodPointers[244] = 
 {
+	AnimalCanvasController_Start_mF9517E85D8084506B2C9B959EA6AEB6443CB5F78,
+	AnimalCanvasController_wait_mB0E188A725AFA2E3FF8E357022EE0EAF123DA1EC,
+	AnimalCanvasController_Update_mB392F1EB1A3223AABBE5377A8E9787AFD5923C56,
+	AnimalCanvasController__ctor_m65668FAEB1CA0CE8AAA33022C99009DC43F93474,
+	U3CwaitU3Ed__2__ctor_m2F49BD30132BF44E020BC6E68E8FDBD855A92726,
+	U3CwaitU3Ed__2_System_IDisposable_Dispose_mC4EF5730E98F5D76BD99B6E4449850D2B18C9666,
+	U3CwaitU3Ed__2_MoveNext_mBBCAFFF6EE522D5ED1BCC92E7E84F798D5D14E38,
+	U3CwaitU3Ed__2_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_mE2AB298372334D82E3C7F2DBA8A730950DD9BE20,
+	U3CwaitU3Ed__2_System_Collections_IEnumerator_Reset_m0E1E4549F0ACD4585506B4DCB9D2954667C1C732,
+	U3CwaitU3Ed__2_System_Collections_IEnumerator_get_Current_mF1E713C32DE93C2BB28AA3D35FDD819C524DBB37,
 	Animal_get_isChild_m2DC66D53F24795C7B4BB285DF099086680746FCA,
 	Animal_set_isChild_mFB9450F3EABB2CC2CE0D7D477205A98557CBFD44,
 	Animal_Awake_m5CBCBEF4CE7648B200F4A3881C4B6D5A52C7B772,
@@ -494,18 +514,28 @@ extern void Gene_thirstSystem_m78B58AF9B1968456DA89B3437AB2AEB3DD531D80_Adjustor
 extern void Gene_urgeSystem_mF3CC51DC3857B0427AD0A7235A350E2C367F4B9F_AdjustorThunk (void);
 static Il2CppTokenAdjustorThunkPair s_adjustorThunks[9] = 
 {
-	{ 0x0600002C, Gene_get_feelHungry_m5494CFFAB0BBB9A957E6E1F5342C7A4264D512F6_AdjustorThunk },
-	{ 0x0600002D, Gene_set_feelHungry_mE716C19662CCE5F41694C68B7BCCE097D2B2FACA_AdjustorThunk },
-	{ 0x0600002E, Gene_get_feelThirst_m6302109217AE47C4C5B43DE1F80ECA85734257AF_AdjustorThunk },
-	{ 0x0600002F, Gene_set_feelThirst_mE848F772DC2C76572497F8185AF3B4B1A768C439_AdjustorThunk },
-	{ 0x06000030, Gene_get_feelUrge_mA556CE7AFC495AD2ACB52F6DD635000A0AC98D56_AdjustorThunk },
-	{ 0x06000031, Gene_set_feelUrge_mB609106F4C58CCC566D89911955168B7EFBAE5AE_AdjustorThunk },
-	{ 0x06000032, Gene_hungerSystem_m3141DB2F65B35EA4C22C287B95F524BA167C928E_AdjustorThunk },
-	{ 0x06000033, Gene_thirstSystem_m78B58AF9B1968456DA89B3437AB2AEB3DD531D80_AdjustorThunk },
-	{ 0x06000034, Gene_urgeSystem_mF3CC51DC3857B0427AD0A7235A350E2C367F4B9F_AdjustorThunk },
+	{ 0x06000036, Gene_get_feelHungry_m5494CFFAB0BBB9A957E6E1F5342C7A4264D512F6_AdjustorThunk },
+	{ 0x06000037, Gene_set_feelHungry_mE716C19662CCE5F41694C68B7BCCE097D2B2FACA_AdjustorThunk },
+	{ 0x06000038, Gene_get_feelThirst_m6302109217AE47C4C5B43DE1F80ECA85734257AF_AdjustorThunk },
+	{ 0x06000039, Gene_set_feelThirst_mE848F772DC2C76572497F8185AF3B4B1A768C439_AdjustorThunk },
+	{ 0x0600003A, Gene_get_feelUrge_mA556CE7AFC495AD2ACB52F6DD635000A0AC98D56_AdjustorThunk },
+	{ 0x0600003B, Gene_set_feelUrge_mB609106F4C58CCC566D89911955168B7EFBAE5AE_AdjustorThunk },
+	{ 0x0600003C, Gene_hungerSystem_m3141DB2F65B35EA4C22C287B95F524BA167C928E_AdjustorThunk },
+	{ 0x0600003D, Gene_thirstSystem_m78B58AF9B1968456DA89B3437AB2AEB3DD531D80_AdjustorThunk },
+	{ 0x0600003E, Gene_urgeSystem_mF3CC51DC3857B0427AD0A7235A350E2C367F4B9F_AdjustorThunk },
 };
-static const int32_t s_InvokerIndices[234] = 
+static const int32_t s_InvokerIndices[244] = 
 {
+	4452,
+	4354,
+	4452,
+	4452,
+	3560,
+	4452,
+	4278,
+	4354,
+	4452,
+	4354,
 	4278,
 	3507,
 	4452,
@@ -745,7 +775,7 @@ IL2CPP_EXTERN_C const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule;
 const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule = 
 {
 	"Assembly-CSharp.dll",
-	234,
+	244,
 	s_methodPointers,
 	9,
 	s_adjustorThunks,

@@ -1870,6 +1870,10 @@ void RegisterAllStrippedInternalCalls()
 		void Register_UnityEngine_Object_Internal_InstantiateSingle_Injected();
 		Register_UnityEngine_Object_Internal_InstantiateSingle_Injected();
 
+		//UnityEngine.Object[] UnityEngine.Object::FindObjectsOfType(System.Type,System.Boolean)
+		void Register_UnityEngine_Object_FindObjectsOfType();
+		Register_UnityEngine_Object_FindObjectsOfType();
+
 	//End Registrations for type : UnityEngine.Object
 
 	//Start Registrations for type : UnityEngine.ObjectGUIState

@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
+
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -18,14 +16,13 @@ public class LevelGenerator : MonoBehaviour
     //public int numGround = 4;
     public int numWater = 3;
 
-    //float prefabWidth;
-    //float prefabDepth;
-
     bool canGenerateCell;
 
     GameObject[,] cellsArray = new GameObject[0, 0];
 
     CellType[,] cellsArrayMap = new CellType[0, 0];
+
+    CellType[,] cellsArrayMap2 = new CellType[0, 0];
 
 
     private void Start() {
@@ -60,15 +57,16 @@ public class LevelGenerator : MonoBehaviour
             gridDepth = 50;
         }
         canGenerateCell = true;
-      
+
+        cellsArrayMap = new CellType[cellsArray.GetLength(0), cellsArray.GetLength(1)];
+
+
         StartCoroutine(createGrid());
     }
-
 
     public void getIterations(string input) {
         iterations = Convert.ToInt32(input);
     }
-
 
     IEnumerator createGrid() {
         
@@ -82,27 +80,35 @@ public class LevelGenerator : MonoBehaviour
         // Copy the array values of the random initial cubes to a bool array to know if they are alive or dead
         copyArray();
 
+        
         for(int it=0; it<iterations; it++) {
+            cellsArrayMap2 = new CellType[cellsArray.GetLength(0), cellsArray.GetLength(1)];
             for (int i = 0; i < gridWidth; i++) {
                 for (int j = 0; j < gridDepth; j++) {
                     // Check if the cell matrix is empty before creating a new one
                     if (canGenerateCell) {
                         //check neighbors
-                        int numOfNeighbors = checkNeighbors(i, j);
-                        switch (cellsArrayMap[i, j]) {
-                            case CellType.Grass:
-                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Water);
-                                break;
-                            case CellType.Water:
-                                cellsArray[i, j].GetComponent<CubeCell>().setCube((numOfNeighbors >= numWater) ? CellType.Water : CellType.Grass); 
-                                break;
-                            default: Debug.Log("Error with cell type"); break;
-                        }
+                        int numOfNeighbors = checkNeighbors2(i, j);
+                        Debug.Log($"Tile {i},{j}  # neighbors: {numOfNeighbors}" );
+
+                        cellsArrayMap2[i, j] = (numOfNeighbors >= numGrass) ? CellType.Grass : CellType.Water;
                     }
 
                 }
-            }   
+            }
+            //yield return new WaitForSeconds(2f);
+            cellsArrayMap = cellsArrayMap2;
         }
+   
+         for (int i = 0; i < gridWidth; i++) {
+             for (int j = 0; j < gridDepth; j++) {
+                 // Check if the cell matrix is empty before creating a new one
+                 if (canGenerateCell) {
+                     //check neighbors
+                     cellsArray[i, j].GetComponent<CubeCell>().setCube((cellsArrayMap[i,j] == CellType.Grass) ? CellType.Water : CellType.Grass);
+                 }
+             }
+         }
 
         copyArray();
 
@@ -121,7 +127,7 @@ public class LevelGenerator : MonoBehaviour
     }
 
     void setRandomCubes(int i, int j) {
-        bool randomValue = UnityEngine.Random.Range(0, 2) < 1;
+        bool randomValue = UnityEngine.Random.value < 0.55f;
         Vector3 cubePos = new Vector3(i - gridWidth * 0.5f, 0, j - gridDepth * 0.5f);
         // Instantiate cube
         GameObject temp = Instantiate(gridElement, cubePos, Quaternion.identity);
@@ -144,10 +150,6 @@ public class LevelGenerator : MonoBehaviour
                     if (cellsArrayMap[x + i, y + j] == CellType.Grass) {
                         cellsArray[x + i, y + j].GetComponent<CubeCell>().setCube(CellType.Ground);
                     }
-                //} else if (cellsArrayMap[x, y] == CellType.Grass) {
-                //    if (cellsArrayMap[x + i, y + j] == CellType.Water) {
-                //        cellsArray[x, y].GetComponent<CubeCell>().setCube(CellType.Ground);
-                //    }
                 }
             }
         }
@@ -169,21 +171,37 @@ public class LevelGenerator : MonoBehaviour
             }
         }
         // Minus one to ignore the center cell comparing with itself
-        return --num;
+        return num;
+    }
+
+    int checkNeighbors2(int x, int y) {
+        int num = 0;
+        // Exclude the edges of the grid from the math
+        if (x == 0 || y == 0 || x == gridWidth - 1 || y == gridDepth - 1) {
+            return 0;
+        }
+        // Go through the neighbors of the cell and check if they are the same color as the center cell
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+               // Debug.Log($"Tile: {x},{y}   x: {x+ i}, y: {y+j}" );
+                if (cellsArrayMap[x + i, y + j] == CellType.Grass) {
+                    num++;
+                }
+            }
+        }
+        // Minus one to ignore the center cell comparing with itself
+        return num;
     }
 
     // Copy matrix array to check the condition of the next generation of cells without affecting the original matrix of cells
     void copyArray() {
-        cellsArrayMap = new CellType[cellsArray.GetLength(0), cellsArray.GetLength(1)];
+        //cellsArrayMap = new CellType[cellsArray.GetLength(0), cellsArray.GetLength(1)];
+        //cellsArrayMap2 = new CellType[cellsArray.GetLength(0), cellsArray.GetLength(1)];
         for (int i = 0; i < cellsArray.GetLength(0); i++) {
             for (int j = 0; j < cellsArray.GetLength(1); j++) {
                 cellsArrayMap[i, j] = cellsArray[i, j].GetComponent<CubeCell>().getCellType();
             }
         }
-    }
-
-    public GameObject[,] getMap() {
-        return cellsArray;
     }
 
     public CellType[,] getCubeMap() {
